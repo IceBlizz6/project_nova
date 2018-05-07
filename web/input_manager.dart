@@ -9,7 +9,6 @@ class InputManager<T> {
     _previous = new HashSet<T>();
     _current = new HashSet<T>();
     _active = new HashSet<T>();
-
   }
 
   void clearInputCache() {

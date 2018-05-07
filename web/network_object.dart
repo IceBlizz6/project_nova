@@ -11,21 +11,21 @@ import 'dart:math' as Math;
 import 'mouse_device.dart';
 
 class NetworkObject extends Sprite implements Animatable {
-	double reportX;
-	double reportY;
-	double reportRotation;
+  double reportX;
+  double reportY;
+  double reportRotation;
 
-	Vector get position => new Vector(x, y);
-	
-	void set position(Vector value) {
-		x = value.x;
-		y = value.y;
-	}
-	
-	@override
-	bool advanceTime(num time) {
-		x = reportX;
-		y = reportY;
-		rotation = reportRotation;
-	}
+  Vector get position => new Vector(x, y);
+
+  void set position(Vector value) {
+    x = value.x;
+    y = value.y;
+  }
+
+  @override
+  bool advanceTime(num time) {
+    x = reportX;
+    y = reportY;
+    rotation = reportRotation;
+  }
 }

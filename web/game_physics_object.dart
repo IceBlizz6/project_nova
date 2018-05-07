@@ -13,38 +13,35 @@ import 'abstract_game_object.dart';
 import 'game_scene.dart';
 
 class GamePhysicsObject extends AbstractGameObject {
-  
   double maxSpeed = 5.0;
   Vector acceleration = new Vector(0, 0);
   Vector velocity = new Vector(0, 0);
 
-  GamePhysicsObject(GameScene scene)
-    : super(scene) {
-  }
-  
+  GamePhysicsObject(GameScene scene) : super(scene) {}
 
   @override
   bool advanceTime(num time) {
     velocity += acceleration.scale(time);
-    
+
     if (velocity.length > maxSpeed) {
       velocity = velocity.normalize().scale(maxSpeed);
     }
-    
-    Vector targetPosition = position + velocity;
-    
-    
-    position = scene.checkCollisionMovement(this, position, new Vector(targetPosition.x, position.y));
 
-    position = scene.checkCollisionMovement(this, position, new Vector(position.x, targetPosition.y));
-    
+    Vector targetPosition = position + velocity;
+
+    position = scene.checkCollisionMovement(
+        this, position, new Vector(targetPosition.x, position.y));
+
+    position = scene.checkCollisionMovement(
+        this, position, new Vector(position.x, targetPosition.y));
+
     x = Math.max(0, x);
 
     if (super.boundsTransformed.left < 0) {
       double displace = -super.boundsTransformed.left;
       x += displace;
     }
-    
+
     if (super.boundsTransformed.right > 1280) {
       double displace = super.boundsTransformed.right - 1280;
       x -= displace;
@@ -54,7 +51,7 @@ class GamePhysicsObject extends AbstractGameObject {
       double displace = -super.boundsTransformed.top;
       y += displace;
     }
-    
+
     if (super.boundsTransformed.bottom > 720) {
       double displace = super.boundsTransformed.bottom - 720;
       y -= displace;

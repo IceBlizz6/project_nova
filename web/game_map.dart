@@ -14,19 +14,17 @@ import 'game_physics_object.dart';
 import 'game_scene.dart';
 
 class GameMap {
-	GameScene scene;
-	BitmapData backgroundTex;
-	
-	GameMap(this.scene) {
-		backgroundTex = scene.loadBitmap("terrain1");
-		
-		Sprite background = new Sprite();
-		//background.addChild(new Bitmap(backgroundTex));
-		background.width = 1280;
-		background.height = 720;
-		
-		scene.addMap(background);
-	
-	}
+  GameScene scene;
+  BitmapData backgroundTex;
 
+  GameMap(this.scene) {
+    backgroundTex = scene.loadBitmap("terrain1");
+
+    Sprite background = new Sprite();
+    //background.addChild(new Bitmap(backgroundTex));
+    background.width = 1280;
+    background.height = 720;
+
+    scene.addMap(background);
+  }
 }

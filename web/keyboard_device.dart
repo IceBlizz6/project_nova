@@ -7,7 +7,6 @@ class KeyboardDevice implements Animatable {
   InputManager<int> input;
 
   KeyboardDevice() {
-
     this.input = new InputManager<int>();
 
     window.onKeyDown.listen((e) {
@@ -34,9 +33,6 @@ class KeyboardDevice implements Animatable {
   @override
   bool advanceTime(num time) {
     // TODO: implement advanceTime
-
-
-
 
     update(time);
     return true;

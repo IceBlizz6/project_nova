@@ -13,33 +13,30 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
     //this.physics = new PhysicsObject();
     //physics.friction = 0.95;
   }
-  
+
   Vector getOffset() {
     return new Vector(_stage.sourceWidth / 2, _stage.sourceHeight / 2);
   }
 
-  void moveTowards(num x, num y, num time)  {
+  void moveTowards(num x, num y, num time) {
     //num setX = _move(getPositionX(), x, time, cameraSpeed);
     //num setY = _move(getPositionY(), y, time, cameraSpeed);
-    
+
     //Vector current = new Vector(physics.position.x, physics.position.y);
     Vector destination = new Vector(x, y);
-    
+
     //Vector offset = destination - current;
     //Vector direction = offset.normalize();
     //Vector acceleration = new Vector(direction.x * cameraSpeed, direction.y * cameraSpeed);
-    
+
     //physics.acceleration += acceleration;
-    
+
     //physics.velocityX += acceleration.x;
     //physics.velocityY += acceleration.y;
-    
-    
-    
-    
+
     //setPosition(setX, setY);
   }
-  
+
   static num _move(num pos, num destination, num time, num speed) {
     num diff = (destination - pos).abs();
     bool direction = true;
@@ -47,7 +44,7 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
       direction = false;
     }
     num travelDistance = time * speed;
-    
+
     if (travelDistance >= diff) {
       return destination;
     } else {
@@ -64,7 +61,6 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
     var offset = getOffset();
     this.x = -x;
     this.y = -y;
-    
   }
 
   num getPositionX() {

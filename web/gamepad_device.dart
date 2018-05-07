@@ -8,9 +8,7 @@ import 'package:stagexl/stagexl.dart';
 class GamepadDevice extends InputManager<GamepadButton> implements Animatable {
   int _index;
 
-  GamepadDevice(this._index) {
-
-  }
+  GamepadDevice(this._index) {}
 
   List<GamepadButton> getButtons() {
     return getGamepad().buttons;
@@ -23,13 +21,15 @@ class GamepadDevice extends InputManager<GamepadButton> implements Animatable {
   bool isConnected() {
     return getGamepad() != null;
   }
-  
+
   double stickValue(int stickIndex, int axesIndex) {
-    double originalValue = getGamepad().axes[stickIndex * 2 + axesIndex].toDouble();
-    int roundedValue = (originalValue * 10.0).round(); // stick value inaccurate at 1/100, using 1/10
-    return roundedValue.toDouble()  / 10.0;
+    double originalValue =
+        getGamepad().axes[stickIndex * 2 + axesIndex].toDouble();
+    int roundedValue = (originalValue * 10.0)
+        .round(); // stick value inaccurate at 1/100, using 1/10
+    return roundedValue.toDouble() / 10.0;
   }
-  
+
   bool anyButtonDown() {
     List<GamepadButton> buttons = getButtons();
     for (GamepadButton button in buttons) {
