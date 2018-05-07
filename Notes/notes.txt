@@ -1,0 +1,320 @@
+//var shape = new Shape();
+		//shape.graphics.ellipse(100, 100, 400, 300);
+		//shape.graphics.fillPattern(new GraphicsPattern.noRepeat(backgroundTex.renderTextureQuad));
+		//stage.addChild(shape);
+
+
+Game object properties:
+* animate - has moving animation
+* collision - can collide with
+*
+
+
+
+
+Types:
+* Table, Chair, Walls - collision, not animation
+* Bullets - collision, animation
+* Player - collision, animation
+* Network players - collision, animation
+* Drones
+
+-------
+
+Collision:
+
+* check if player is in map bounds
+
+* run for each dimension - can move along walls
+> cannot do this for bullets!!
+	- only player movement
+
+
+
+* need constant step for collision check
+
+* Step = 2 (ceil from current position)
+
+
+
+
+
+
+Game stage:
+* Player object
+* Bullets
+* Network object (other players, AI drones?, other player bullets)
+* Map (stationary objects)
+
+Components:
+* Keyboard / Mouse
+* Socket
+
+Loop:
+* Input player controls (move, shoot)
+	- check collision detection for stationary objects
+* Check bullet collision detection
+---------------
+
+Structure:
+Main - starting up loop, setting up basics
+	GameLoop - overarching components: mouse, keyboard, socket, ..
+		GameScene - in-game match objects and components
+			GameMap -
+		Settings screen
+
+Flow:
+Main Menu
+	Settings
+		Sound
+		Fullscreen (on/off)
+		Resolution
+	Join Game
+
+
+* render bullets over network (each player notifies server of own bullets)
+* server update player positions per step, not everyone it receives
+
+* sending packets as series of bytes (not text)
+
+* does it work on gearhost with unsecure WebSocket?
+
+* 2D camera moving with the player
+
+
+
+Client:
+* Render list of objects set by server, server ignore self?:
+	{ID}
+
+
+Sub protocol (Server => Client):
+0 = Assign user id
+1 = send player list { [hte563, 375, 192], [hfe568, 315, 102], .... }
+2 = player joined
+3 = player left
+
+
+protocol (Client => Server)
+0 = updated position
+
+
+-----
+
+
+IceBlizz6
+FaerieFrost912
+
+- amazon: RedArrow172
+
+
+----
+
+------------------------------------------------
+
+
+  //BitmapData spriteData = resourceManager.getBitmapData("spaceship1");
+  //BitmapData starData = resourceManager.getBitmapData("star1");
+  //BitmapData laserData = resourceManager.getBitmapData("laser1");
+
+
+
+  //Sprite background = new Sprite();
+
+  background.addChild(new Bitmap(backgroundData));
+  background.width = 1280;
+  background.height = 720;
+
+  GameObject playerObject = new GameObject();
+  playerObject.addChild(new Bitmap(spriteData));
+  playerObject.pivotX = playerObject.width / 2;
+  playerObject.pivotY = playerObject.height / 2;
+  playerObject.scaleX = 0.6;
+  playerObject.scaleY = 0.6;
+
+  playerObject.x = 500;
+  playerObject.y = 200;
+
+  //GameCamera camera = new GameCamera(stage);
+  //stage.addChild(camera);
+  stage.addChild(background);
+  stage.addChild(playerObject);
+
+  //camera.width = 1280;
+  //camera.height = 720;
+
+  //stage.juggler.add(camera);
+
+  //camera.target = spaceshipSprite;
+  //Vector targetOffset = camera.getOffset();
+  //camera.pivotX = -targetOffset.x;
+  //camera.pivotY = -targetOffset.y;
+
+  //camera.width = stage.width;
+  //camera.height = stage.height;
+  //camera.pivotX = camera.width / 2;
+  //camera.pivotY = camera.height / 2;
+
+  //html.querySelector('#text').text = stage.sourceWidth.toString();
+
+  //camera.x -= 200;
+
+  //stage.addChild(spaceshipSprite);
+
+  // See more examples:
+  // https://github.com/bp74/StageXL_Samples
+
+  //window.onKeyDown.listen((event) {
+  //  canvas.requestFullscreen();
+  //});
+
+  stage.onKeyDown.listen((event) {
+    //
+  });
+.......................................................------------------------------------
+
+
+
+
+
+	void updateRemoveNetwork(String removeId) {
+		var obj = networkSprites[removeId];
+		stage.juggler.remove(obj);
+		stage.removeChild(obj);
+
+		networkSprites[removeId] = null;
+	}
+
+	void updateNetwork() {
+		for (PlayerData playerData in gameSocket.players.values) {
+			if (networkSprites[playerData.id] == null) {
+				createNetworkPlayer(playerData.id);
+			}
+
+			networkSprites[playerData.id].reportX = playerData.x;
+			networkSprites[playerData.id].reportY = playerData.y;
+			networkSprites[playerData.id].reportRotation = playerData.rotation;
+		}
+	}
+
+	void createNetworkPlayer(String id) {
+		NetworkObject networkPlayerSprite = new NetworkObject();
+		networkPlayerSprite.addChild(new Bitmap(shipSprite));
+		networkPlayerSprite.pivotX = networkPlayerSprite.width / 2;
+		networkPlayerSprite.pivotY = networkPlayerSprite.height / 2;
+		networkPlayerSprite.scaleX = 0.6;
+		networkPlayerSprite.scaleY = 0.6;
+
+		networkSprites[id] = networkPlayerSprite;
+
+		stage.addChild(networkPlayerSprite);
+		stage.juggler.add(networkPlayerSprite);
+	}
+
+	void createLaser(Vector origin, Vector direction) {
+		Sprite laserSprite = new Sprite();
+		laserSprite.addChild(new Bitmap(laserData));
+
+
+		laserSprite.pivotX = laserSprite.width / 2;
+		laserSprite.pivotY = laserSprite.height / 2;
+		laserSprite.scaleX = 2.0;
+		laserSprite.scaleY = 2.0;
+		laserSprite.rotation = direction.degrees/180 * PI + PI/2;
+
+		laserSprite.x = origin.x;
+		laserSprite.y = origin.y;
+
+		laserShots.add(laserSprite);
+		shotDirections.add(direction);
+		stage.addChild(laserSprite);
+	}
+
+	@override
+	bool advanceTime(num time) {
+		// TODO: implement advanceTime
+		num speed = 20.0;
+
+		for (int i = 0;i<laserShots.length;i++) {
+			laserShots[i].x += shotDirections[i].scale(speed).x;
+			laserShots[i].y += shotDirections[i].scale(speed).y;
+		}
+
+
+
+		num distanceRot = (currentRotValue - rotValue).abs();
+		if (distanceRot > PI) {
+			if (rotValue < currentRotValue) {
+				currentRotValue -= 2* PI;
+			} else {
+				currentRotValue += 2 * PI;
+			}
+		}
+
+
+
+
+		//html.querySelector('#text').text = dir.degrees.toString();
+
+		num accelerationSpeed = 15000.0;
+
+
+
+		num dirX = Math.cos(playerObject.rotation + PI/2);
+		num dirY = Math.sin(playerObject.rotation + PI/2);
+
+		if (mouseDevice.isPressed(0)) {
+			Vector shotDirection = new Vector(dirX, dirY);
+			createLaser(playerObject.position + shotDirection.scale(playerObject.height/4), shotDirection);
+
+		}
+
+
+		//playerObject.update(time);
+		playerObject.advanceTime(time);
+
+		num posX = cycleRange(playerObject.position.x, 0, 1280);
+		num posY = cycleRange(playerObject.position.y, 0, 720);
+
+		//Math.
+		playerObject.x = posX;
+		playerObject.y = posY;
+		playerObject.position = new Vector(posX, posY);
+
+		// send data to server
+		gameSocket.updatePosition(posX, posY, playerObject.rotation);
+
+
+
+
+
+		//html.querySelector('#text').text = gamepad.StickValue(0, 0).toString() + ", " + gamepad.StickValue(0, 1).toString();
+
+
+		//var tween = stage.juggler.addTween(spaceshipSprite, 0.0);
+		//spaceshipController.animate.x.to(spaceshipSprite.x + moveX);
+		//spaceshipController.animate.y.to(spaceshipSprite.y + moveY);
+
+
+		return true;
+	}
+
+	num cycleRange(num value, num min, num max) {
+		num val = value;
+		num range = max - min;
+		while (val < min) {
+			val += range;
+		}
+		while (val > max) {
+			val -= range;
+		}
+		return val;
+	}
+
+
+
+
+
+
+
+

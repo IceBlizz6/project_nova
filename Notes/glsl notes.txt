@@ -1,0 +1,45 @@
+precision highp float;
+		varying vec2 vTextCoord;
+
+		void main () {
+			gl_FragColor = vec4(vTextCoord.xy, 1.0, 1.0);
+		}
+
+
+
+class MyFilter extends BitmapFilter {
+
+  @override
+  BitmapFilter clone() {
+    return new MyFilter();
+  }
+
+	@override
+	void renderFilter(RenderState renderState, RenderTextureQuad renderTextureQuad, int pass) {
+
+		RenderContextWebGL renderContext = renderState.renderContext;
+		String programName = "ColorMatrixAlphaMaskProgram";
+		MyProgram renderProgram;
+
+		renderProgram  = renderContext.getRenderProgram(programName, () => new MyProgram());
+		renderContext.activateRenderProgram(renderProgram);
+		renderContext.activateRenderTextureAt(renderTextureQuad.renderTexture, 0);
+		//renderContext.activateRenderTextureAt(bitmapData.renderTexture, 1);
+		//renderProgram.configure(this, renderTextureQuad, bitmapData.renderTextureQuad);
+		renderProgram.renderTextureQuad(renderState, renderTextureQuad);
+		renderProgram.flush();
+	}
+}
+
+class MyProgram extends RenderProgramSimple {
+
+	@override
+	String get fragmentShaderSource => """
+		precision highp float;
+		varying vec2 vTextCoord;
+
+		void main () {
+			gl_FragColor = vec4(vTextCoord.xy, 1.0, 1.0);
+		}
+    	""";
+}
