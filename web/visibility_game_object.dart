@@ -24,25 +24,14 @@ class VisibilityGameObject extends AbstractGameObject {
 
   @override
   bool advanceTime(num time) {
-    //shape.graphics.clear();
-
-    //CollisionRay collisionRay = new CollisionRay();
-
-    //print(polygons.length);
-
-    //shape.applyCache(450, 200, 100, 100);
-
-    //drawTest(shape.graphics, pList, observingGameObject.position);
-
     List<Segment> segments = scene.getAllSegments();
     List<IntersectionData> polygons =
         CollisionRay.getSightPolygon(segments, observingGameObject.position);
-
-    List<Vector> pList = polygons.map((el) => el.v).toList();
-
+    
+    var matrix = this.globalTransformationMatrix;
+    matrix.invert();
+    List<Vector> pList = polygons.map((el) => matrix.transformVector(el.v)).toList();
     drawTest(shape.graphics, pList);
-
-    //fill2(shape.graphics, observingGameObject.position);
 
     return super.advanceTime(time);
   }
@@ -57,32 +46,8 @@ class VisibilityGameObject extends AbstractGameObject {
       ctx.lineTo(intersect.x, intersect.y);
     }
     ctx.closePath();
-    //shape.graphics.strokePattern(new GraphicsPattern.repeat(bitmapData.renderTextureQuad));
 
-    //ctx.strokeColor(Color.Black);
-    //ctx.fillColor(Color.Black);
     shape.graphics.fillPattern(
         new GraphicsPattern.noRepeat(bitmapData.renderTextureQuad));
-  }
-
-  void fill2(Graphics ctx, Vector Mouse) {
-    var fuzzyRadius = 5;
-
-    //ctx.fillStyle = "#fff";
-    ctx.beginPath();
-    ctx.arc(Mouse.x, Mouse.y, 2, 0, 2 * Math.PI, false);
-    //ctx.fill();
-    ctx.fillColor(Color.Black);
-
-    for (double angle = 0.0;
-        angle < Math.PI * 2;
-        angle += (Math.PI * 2.0) / 10.0) {
-      var dx = Math.cos(angle) * fuzzyRadius;
-      var dy = Math.sin(angle) * fuzzyRadius;
-      ctx.beginPath();
-      ctx.arc(Mouse.x + dx, Mouse.y + dy, 2, 0, 2 * Math.PI, false);
-      //ctx.fill();
-      ctx.fillColor(Color.Black);
-    }
   }
 }
