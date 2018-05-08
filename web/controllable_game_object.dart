@@ -7,14 +7,16 @@ import 'game_physics_object.dart';
 import 'package:stagexl/stagexl.dart';
 import 'dart:math' as Math;
 import 'gamepad_device.dart';
+import 'game_camera.dart';
 
 class ControllableGameObject extends GamePhysicsObject {
+  GameCamera camera;
   KeyboardDevice keyboardDevice;
   MouseDevice mouseDevice;
   GamepadDevice gamepadDevice;
   bool inputMode;
 
-  ControllableGameObject(GameScene scene, this.keyboardDevice, this.mouseDevice,
+  ControllableGameObject(GameScene scene, this.camera, this.keyboardDevice, this.mouseDevice,
       this.gamepadDevice)
       : super(scene) {}
 
@@ -61,7 +63,12 @@ class ControllableGameObject extends GamePhysicsObject {
 
     num mouseX = stage.mouseX;
     num mouseY = stage.mouseY;
-    Vector dir = new Vector(mouseX - x, mouseY - y).normalize();
+    var m = camera.globalTransformationMatrix;
+    m.invert();
+    Vector transformedMousePos = m.transformVector(new Vector(mouseX, mouseY));
+    
+    //new Vector(mouseX - x, mouseY - y)
+    Vector dir = (transformedMousePos - position).normalize();
     num rotValue = ((dir.degrees - 90) / 180) * Math.PI;
     rotation = rotValue;
 

@@ -38,13 +38,6 @@ class GameLoop implements Animatable {
     this.gameScene = new GameScene(this, resourceManager);
   }
 
-  void add(Sprite sprite) {
-    stage.addChild(sprite);
-    if (sprite is Animatable) {
-      stage.juggler.add(sprite as Animatable);
-    }
-  }
-
   @override
   bool advanceTime(num time) {
     return true;

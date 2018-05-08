@@ -26,15 +26,26 @@ class GameScene implements Animatable {
   List<AbstractGameObject> gameObjects;
   ControllableGameObject playerObject;
   // Map<String, NetworkObject> networkSprites = new Map<String, NetworkObject>();
+  GameCamera camera;
 
   Shape shape;
 
   GameScene(this._gameLoop, this.resourceManager) {
     gameObjects = new List<AbstractGameObject>();
+    
+    this.camera = new GameCamera(null);
+    _gameLoop.stage.addChild(camera);
+    _gameLoop.stage.juggler.add(camera);
+    camera.x = 300.0;
+    camera.y = 200.0;
+    
     GameMap gameMap = new GameMap(this);
     setupPlayerObject(new Vector(200, 200));
     addBox(new Vector(400, 300), new Vector(0.5, 2.0));
     addShipVisibility();
+    
+    
+    camera.target = playerObject;
 
     this.shape = new Shape();
     _gameLoop.stage.addChild(shape);
@@ -48,7 +59,7 @@ class GameScene implements Animatable {
         CollisionRay.getSightPolygon(segments, playerObject.position);
 
     List<Vector> pList = polygons.map((el) => el.v).toList();
-    drawTest(shape.graphics, pList, playerObject.position);
+    //drawTest(shape.graphics, pList, playerObject.position);
   }
 
   static void drawTest(Graphics ctx, List<Vector> polygon, Vector Mouse) {
@@ -91,7 +102,7 @@ class GameScene implements Animatable {
     bitmap.scaleY = 0.3;
 
     ControllableGameObject gameObj = new ControllableGameObject(
-        this,
+        this, camera,
         _gameLoop.keyboardDevice,
         _gameLoop.mouseDevice,
         _gameLoop.gamepadDevice);
@@ -137,7 +148,7 @@ class GameScene implements Animatable {
     //stage.addChild(shape);
 
     VisibilityGameObject gameObj =
-        new VisibilityGameObject(this, shape, bitmapData, playerObject);
+        new VisibilityGameObject(this, camera, shape, bitmapData, playerObject);
     gameObj.addChild(shape);
 
     gameObj.scaleX = 1.0;
@@ -155,14 +166,19 @@ class GameScene implements Animatable {
   BitmapData loadBitmap(String key) {
     return resourceManager.getBitmapData(key);
   }
-
+  
   void addGameObject(AbstractGameObject gameObject) {
     gameObjects.add(gameObject);
-    _gameLoop.add(gameObject);
+    //_gameLoop.add(gameObject);
+    camera.addChild(gameObject);
+
+    if (gameObject is Animatable) {
+      _gameLoop.stage.juggler.add(gameObject);
+    }
   }
 
   void addMap(Sprite backgroundSprite) {
-    _gameLoop.add(backgroundSprite);
+    camera.addChild(backgroundSprite);
   }
 
   List<Segment> getAllSegments() {

@@ -14,12 +14,13 @@ import 'game_scene.dart';
 import 'collision_ray.dart';
 
 class VisibilityGameObject extends AbstractGameObject {
+	GameCamera camera;
   Shape shape;
   BitmapData bitmapData;
   AbstractGameObject observingGameObject;
 
   VisibilityGameObject(
-      GameScene scene, this.shape, this.bitmapData, this.observingGameObject)
+      GameScene scene, this.camera, this.shape, this.bitmapData, this.observingGameObject)
       : super(scene) {}
 
   @override
@@ -30,8 +31,13 @@ class VisibilityGameObject extends AbstractGameObject {
     
     var matrix = this.globalTransformationMatrix;
     matrix.invert();
+    
+    var matrix2 = camera.globalTransformationMatrix;
+    //matrix2.invert();
+    
     List<Vector> pList = polygons.map((el) => matrix.transformVector(el.v)).toList();
-    drawTest(shape.graphics, pList);
+		List<Vector> pList2 = pList.map((el) => matrix2.transformVector(el)).toList();
+    drawTest(shape.graphics, pList2);
 
     return super.advanceTime(time);
   }
