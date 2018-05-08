@@ -28,7 +28,7 @@ class GameScene implements Animatable {
   // Map<String, NetworkObject> networkSprites = new Map<String, NetworkObject>();
   GameCamera camera;
 
-  Shape shape;
+  Shape wireShape;
 
   GameScene(this._gameLoop, this.resourceManager) {
     gameObjects = new List<AbstractGameObject>();
@@ -47,8 +47,8 @@ class GameScene implements Animatable {
     
     camera.target = playerObject;
 
-    this.shape = new Shape();
-    _gameLoop.stage.addChild(shape);
+    this.wireShape = new Shape();
+    _gameLoop.stage.addChild(wireShape);
     _gameLoop.stage.juggler.add(this);
   }
 
@@ -60,7 +60,7 @@ class GameScene implements Animatable {
 
     var matrix = camera.globalTransformationMatrix;
     List<Vector> pList = polygons.map((el) => matrix.transformVector(el.v)).toList();
-    drawTest(shape.graphics, pList, matrix.transformVector(playerObject.position));
+    drawTest(wireShape.graphics, pList, matrix.transformVector(playerObject.position));
   }
 
   static void drawTest(Graphics ctx, List<Vector> polygon, Vector Mouse) {
