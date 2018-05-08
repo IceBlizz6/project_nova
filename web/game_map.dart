@@ -21,7 +21,7 @@ class GameMap {
     backgroundTex = scene.loadBitmap("terrain1");
 
     Sprite background = new Sprite();
-    //background.addChild(new Bitmap(backgroundTex));
+    background.addChild(new Bitmap(backgroundTex));
     background.width = 1280;
     background.height = 720;
 
