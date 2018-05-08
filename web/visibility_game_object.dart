@@ -34,6 +34,8 @@ class VisibilityGameObject extends AbstractGameObject {
     
     var matrix2 = camera.globalTransformationMatrix;
     //matrix2.invert();
+
+    shape.applyCache(0, 0, bitmapData.width, bitmapData.height);
     
     List<Vector> pList = polygons.map((el) => matrix.transformVector(el.v)).toList();
 		List<Vector> pList2 = pList.map((el) => matrix2.transformVector(el)).toList();
