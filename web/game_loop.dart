@@ -20,27 +20,33 @@ class GameLoop implements Animatable {
   KeyboardDevice keyboardDevice;
   MouseDevice mouseDevice;
   GamepadDevice gamepadDevice;
-  Stage stage;
+  Stage _stage;
   GameScene gameScene;
 
-  GameLoop(this.resourceManager, this.stage) {
+  GameLoop(this.resourceManager, this._stage) {
     this.keyboardDevice = new KeyboardDevice();
-    stage.juggler.add(keyboardDevice);
+    _stage.juggler.add(keyboardDevice);
 
     this.mouseDevice = new MouseDevice();
-    stage.juggler.add(mouseDevice);
+    _stage.juggler.add(mouseDevice);
 
     this.gamepadDevice = new GamepadDevice(0);
-    stage.juggler.add(gamepadDevice);
+    _stage.juggler.add(gamepadDevice);
 
     //this.gameSocket = new GameSocket(this);
 
     this.gameScene = new GameScene(this, resourceManager);
+    _stage.addChild(gameScene);
+    _stage.juggler.add(gameScene);
   }
 
   @override
   bool advanceTime(num time) {
     return true;
+  }
+  
+  void addJuggler(Animatable animatable) {
+    _stage.juggler.add(animatable);
   }
 
   void updateNetwork() {}

@@ -20,7 +20,7 @@ import 'game_map.dart';
 import 'visibility_game_object.dart';
 import 'collision_ray.dart';
 
-class GameScene implements Animatable {
+class GameScene extends DisplayObjectContainer implements Animatable {
   GameLoop _gameLoop;
   ResourceManager resourceManager;
   List<AbstractGameObject> gameObjects;
@@ -34,8 +34,8 @@ class GameScene implements Animatable {
     gameObjects = new List<AbstractGameObject>();
     
     this.camera = new GameCamera(null);
-    _gameLoop.stage.addChild(camera);
-    _gameLoop.stage.juggler.add(camera);
+    this.addChild(camera);
+    _gameLoop.addJuggler(camera);
     camera.x = 300.0;
     camera.y = 200.0;
     
@@ -48,8 +48,7 @@ class GameScene implements Animatable {
     camera.target = playerObject;
 
     this.wireShape = new Shape();
-    _gameLoop.stage.addChild(wireShape);
-    _gameLoop.stage.juggler.add(this);
+    this.addChild(wireShape);
   }
 
   @override
@@ -174,7 +173,7 @@ class GameScene implements Animatable {
     camera.addChild(gameObject);
 
     if (gameObject is Animatable) {
-      _gameLoop.stage.juggler.add(gameObject);
+      _gameLoop.addJuggler(gameObject);
     }
   }
 
