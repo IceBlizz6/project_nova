@@ -58,8 +58,9 @@ class GameScene implements Animatable {
     List<IntersectionData> polygons =
         CollisionRay.getSightPolygon(segments, playerObject.position);
 
-    List<Vector> pList = polygons.map((el) => el.v).toList();
-    //drawTest(shape.graphics, pList, playerObject.position);
+    var matrix = camera.globalTransformationMatrix;
+    List<Vector> pList = polygons.map((el) => matrix.transformVector(el.v)).toList();
+    drawTest(shape.graphics, pList, matrix.transformVector(playerObject.position));
   }
 
   static void drawTest(Graphics ctx, List<Vector> polygon, Vector Mouse) {
