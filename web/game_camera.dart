@@ -3,43 +3,28 @@ import 'dart:collection';
 import 'dart:html';
 import 'input_manager.dart';
 import 'keyboard_device.dart';
+import 'controllable_game_object.dart';
 
 class GameCamera extends DisplayObjectContainer implements Animatable {
-  //PhysicsObject physics;
-  Stage _stage;
   num cameraSpeed = 400.0;
-  Sprite target;
-  
+  ControllableGameObject target;
   KeyboardDevice keyboardDevice;
   
   Vector cameraPos = new Vector(0, 0);
+  Vector cameraSize = new Vector(1280, 720);
 
-  GameCamera(this._stage, this.keyboardDevice) {
-    //this.physics = new PhysicsObject();
-    //physics.friction = 0.95;
+  GameCamera(this.keyboardDevice) {
   }
 
   Vector getOffset() {
-    return new Vector(_stage.sourceWidth / 2, _stage.sourceHeight / 2);
+    return new Vector(cameraSize.x / 2, cameraSize.y / 2);
   }
-
-  void moveTowards(num x, num y, num time) {
-    //num setX = _move(getPositionX(), x, time, cameraSpeed);
-    //num setY = _move(getPositionY(), y, time, cameraSpeed);
-
-    //Vector current = new Vector(physics.position.x, physics.position.y);
-    Vector destination = new Vector(x, y);
-
-    //Vector offset = destination - current;
-    //Vector direction = offset.normalize();
-    //Vector acceleration = new Vector(direction.x * cameraSpeed, direction.y * cameraSpeed);
-
-    //physics.acceleration += acceleration;
-
-    //physics.velocityX += acceleration.x;
-    //physics.velocityY += acceleration.y;
-
-    //setPosition(setX, setY);
+  
+  void findTargetPosition(Vector target) {
+    Vector currentCenter = cameraPos + getOffset();
+    Vector offset = target - currentCenter;
+    cameraPos += offset;
+  
   }
 
   static num _move(num pos, num destination, num time, num speed) {
@@ -80,14 +65,6 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
 
   @override
   bool advanceTime(num time) {
-    
-    if (target != null) {
-      //moveTowards(target.x, target.y, time);
-    }
-    //physics.update(time);
-    //this.x = -physics.position.x;
-    //this.y = -physics.position.y;
-    
     Vector move = new Vector(0, 0);
     
     if (keyboardDevice.isDown(KeyCode.UP)) {
@@ -105,9 +82,18 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
     if (keyboardDevice.isDown(KeyCode.RIGHT)) {
       move += new Vector(1, 0);
     }
+    
+    if (move.x != 0.0 || move.y != 0.0) {
+      cameraPos += move.scale(10.0);
+    } else if (target != null) {
+      Vector v = target.position;
+      findTargetPosition(v);
+    }
+    
+    
 
 
-    cameraPos += move.scale(10.0);
+    
     this.x = -cameraPos.x;
     this.y = -cameraPos.y;
     return true;

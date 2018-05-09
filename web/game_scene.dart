@@ -35,7 +35,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   GameScene(this._gameLoop, this.resourceManager) {
     gameObjects = new List<AbstractGameObject>();
     
-    this.camera = new GameCamera(null, _gameLoop.keyboardDevice);
+    this.camera = new GameCamera(_gameLoop.keyboardDevice);
     this.addChild(camera);
     _gameLoop.addJuggler(camera);
     camera.x = 0.0;

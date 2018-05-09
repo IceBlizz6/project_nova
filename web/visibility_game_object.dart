@@ -44,7 +44,7 @@ class VisibilityGameObject extends AbstractGameObject {
 		List<Vector> pList2 = pList.map((el) => matrix2.transformVector(el)).toList();
     drawTest(shape.graphics, pList2);
 
-    print(this.bounds.width);
+    //print(this.bounds.width);
     //this.bou
     
     return super.advanceTime(time);
