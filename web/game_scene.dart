@@ -33,11 +33,11 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   GameScene(this._gameLoop, this.resourceManager) {
     gameObjects = new List<AbstractGameObject>();
     
-    this.camera = new GameCamera(null);
+    this.camera = new GameCamera(null, _gameLoop.keyboardDevice);
     this.addChild(camera);
     _gameLoop.addJuggler(camera);
-    camera.x = 300.0;
-    camera.y = 200.0;
+    camera.x = 0.0;
+    camera.y = 0.0;
     
     GameMap gameMap = new GameMap(this);
     setupPlayerObject(new Vector(200, 200));
@@ -142,7 +142,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
     Shape shape = new Shape();
 
-    shape.graphics.rect(0, 0, 1280, 720);
+    //shape.graphics.rect(0, 0, 1280, 720);
 
     //shape.graphics.fillPattern(new GraphicsPattern.noRepeat(bitmapData.renderTextureQuad));
     //stage.addChild(shape);

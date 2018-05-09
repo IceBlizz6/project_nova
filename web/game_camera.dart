@@ -2,14 +2,19 @@ import 'package:stagexl/stagexl.dart';
 import 'dart:collection';
 import 'dart:html';
 import 'input_manager.dart';
+import 'keyboard_device.dart';
 
 class GameCamera extends DisplayObjectContainer implements Animatable {
   //PhysicsObject physics;
   Stage _stage;
   num cameraSpeed = 400.0;
   Sprite target;
+  
+  KeyboardDevice keyboardDevice;
+  
+  Vector cameraPos = new Vector(0, 0);
 
-  GameCamera(this._stage) {
+  GameCamera(this._stage, this.keyboardDevice) {
     //this.physics = new PhysicsObject();
     //physics.friction = 0.95;
   }
@@ -75,14 +80,36 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
 
   @override
   bool advanceTime(num time) {
-    // TODO: implement advanceTime
+    
     if (target != null) {
-      moveTowards(target.x, target.y, time);
+      //moveTowards(target.x, target.y, time);
     }
     //physics.update(time);
     //this.x = -physics.position.x;
     //this.y = -physics.position.y;
+    
+    Vector move = new Vector(0, 0);
+    
+    if (keyboardDevice.isDown(KeyCode.UP)) {
+      move += new Vector(0, -1);
+    }
 
+    if (keyboardDevice.isDown(KeyCode.DOWN)) {
+      move += new Vector(0, 1);
+    }
+
+    if (keyboardDevice.isDown(KeyCode.LEFT)) {
+      move += new Vector(-1, 0);
+    }
+
+    if (keyboardDevice.isDown(KeyCode.RIGHT)) {
+      move += new Vector(1, 0);
+    }
+
+
+    cameraPos += move.scale(10.0);
+    this.x = -cameraPos.x;
+    this.y = -cameraPos.y;
     return true;
   }
 }
