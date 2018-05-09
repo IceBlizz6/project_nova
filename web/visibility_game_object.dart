@@ -12,6 +12,7 @@ import 'mouse_device.dart';
 import 'abstract_game_object.dart';
 import 'game_scene.dart';
 import 'collision_ray.dart';
+import 'package:stagexl/stagexl.dart' as StageXL;
 
 class VisibilityGameObject extends AbstractGameObject {
 	GameCamera camera;
@@ -25,6 +26,8 @@ class VisibilityGameObject extends AbstractGameObject {
 
   @override
   bool advanceTime(num time) {
+    
+    
     List<Segment> segments = scene.getAllSegments();
     List<IntersectionData> polygons =
         CollisionRay.getSightPolygon(segments, observingGameObject.position);
@@ -41,7 +44,16 @@ class VisibilityGameObject extends AbstractGameObject {
 		List<Vector> pList2 = pList.map((el) => matrix2.transformVector(el)).toList();
     drawTest(shape.graphics, pList2);
 
+    print(this.bounds.width);
+    //this.bou
+    
     return super.advanceTime(time);
+  }
+  
+  @override
+  get bounds {
+    return new StageXL.Rectangle<num>(0.0, 0.0,
+      bitmapData.width, bitmapData.height);
   }
 
   void drawTest(Graphics ctx, List<Vector> polygon) {

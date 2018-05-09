@@ -162,7 +162,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
     gameObj.visibleSolid = false;
     
-    gameObj.collisionEnabled = false;
+    gameObj.collisionEnabled = true;
 
     addGameObject(gameObj);
   }
