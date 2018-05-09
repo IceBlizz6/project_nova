@@ -47,6 +47,8 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     
     setupPlayerObject(new Vector(200, 200));
     addBox(new Vector(400, 300), new Vector(0.5, 2.0));
+
+		addBox(new Vector(100, 800), new Vector(4.0, 1.0));
     addShipVisibility();
     
     
@@ -288,7 +290,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
       if (collide) {
         return lastPosition;
       } else {
-        //lastPosition = gameObj.position;
+        lastPosition = gameObj.position;
       }
     }
     return targetPosition;
