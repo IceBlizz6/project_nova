@@ -72,6 +72,16 @@ class ControllableGameObject extends GamePhysicsObject {
     num rotValue = ((dir.degrees - 90) / 180) * Math.PI;
     rotation = rotValue;
 
+    if (mouseDevice.isPressed(0)) {
+      num dirX = Math.cos(rotation + Math.PI/2);
+      num dirY = Math.sin(rotation + Math.PI/2);
+      
+      Vector shotDirection = new Vector(dirX, dirY);
+      scene.addLaserShot(position, shotDirection, rotation);
+      //createLaser(playerObject.position + shotDirection.scale(playerObject.height/4), shotDirection);
+  
+    }
+
     super.advanceTime(time);
   }
 }

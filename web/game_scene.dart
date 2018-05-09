@@ -20,6 +20,7 @@ import 'game_map.dart';
 import 'visibility_game_object.dart';
 import 'collision_ray.dart';
 import 'package:stagexl/stagexl.dart' as StageXL;
+import 'projectile_game_object.dart';
 
 class GameScene extends DisplayObjectContainer implements Animatable {
   GameLoop _gameLoop;
@@ -67,6 +68,24 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     var matrix = camera.globalTransformationMatrix;
     List<Vector> pList = polygons.map((el) => matrix.transformVector(el.v)).toList();
     drawTest(wireShape.graphics, pList, matrix.transformVector(playerObject.position));
+  }
+  
+  void addLaserShot(Vector position, Vector direction, double rotation) {
+    ProjectileGameObject projectile = new ProjectileGameObject(this, direction);
+    BitmapData laserBitmapData = loadBitmap("laser1");
+    Bitmap bitmap = new Bitmap(laserBitmapData);
+    bitmap.scaleX = 2.0;
+    bitmap.scaleY = 5.0;
+    
+    projectile.addChild(bitmap);
+    
+    projectile.pivotX = bitmap.width / 2;
+    projectile.pivotY = bitmap.width / 2;
+    
+    projectile.position = position;
+    projectile.rotation = rotation;
+    
+    addGameObject(projectile);
   }
 
   static void drawTest(Graphics ctx, List<Vector> polygon, Vector Mouse) {
