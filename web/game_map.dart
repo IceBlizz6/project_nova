@@ -13,7 +13,7 @@ import 'game_loop.dart';
 import 'game_physics_object.dart';
 import 'game_scene.dart';
 
-class GameMap {
+class GameMap extends DisplayObjectContainer {
   GameScene scene;
   BitmapData backgroundTex;
   
@@ -31,6 +31,6 @@ class GameMap {
     background.width = mapWidth;
     background.height = mapHeight;
 
-    scene.addMap(background);
+    this.addChild(background);
   }
 }

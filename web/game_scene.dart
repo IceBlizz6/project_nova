@@ -19,6 +19,7 @@ import 'main.dart';
 import 'game_map.dart';
 import 'visibility_game_object.dart';
 import 'collision_ray.dart';
+import 'package:stagexl/stagexl.dart' as StageXL;
 
 class GameScene extends DisplayObjectContainer implements Animatable {
   GameLoop _gameLoop;
@@ -34,14 +35,16 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
   GameScene(this._gameLoop, this.resourceManager) {
     gameObjects = new List<AbstractGameObject>();
+
+		this.gameMap = new GameMap(this);
     
-    this.camera = new GameCamera(_gameLoop.keyboardDevice);
+    this.camera = new GameCamera(gameMap, _gameLoop.keyboardDevice);
     this.addChild(camera);
     _gameLoop.addJuggler(camera);
-    camera.x = 0.0;
-    camera.y = 0.0;
     
-    this.gameMap = new GameMap(this);
+    camera.addChild(gameMap);
+    
+    
     setupPlayerObject(new Vector(200, 200));
     addBox(new Vector(400, 300), new Vector(0.5, 2.0));
     addShipVisibility();
@@ -181,10 +184,6 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     }
   }
 
-  void addMap(Sprite backgroundSprite) {
-    camera.addChild(backgroundSprite);
-  }
-
   List<Segment> getAllSegments() {
     List<Segment> segments = new List<Segment>();
 
@@ -302,8 +301,6 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   }
   
   static Vector checkMapBounds(var boundsTransformed, Vector mapStart, Vector mapEnd) {
-    //x = Math.max(0, x);
-    
     double offsetX = 0.0;
     double offsetY = 0.0;
   
@@ -329,6 +326,33 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     
     return new Vector(offsetX, offsetY);
   }
+  
+  static Vector fitBounds(StageXL.Rectangle<num> bounds, Vector point) {
+		double offsetX = 0.0;
+		double offsetY = 0.0;
+	
+		if (bounds.left < point.x) {
+			double displace = point.x - bounds.left;
+			offsetX += displace;
+		}
+	
+		if (bounds.right > point.x) {
+			double displace = bounds.right - point.x;
+			offsetX -= displace;
+		}
+	
+		if (bounds.top < point.y) {
+			double displace = point.y - bounds.top;
+			offsetY += displace;
+		}
+	
+		if (bounds.bottom > point.y) {
+			double displace = bounds.bottom - point.y;
+			offsetY -= displace;
+		}
+	
+		return new Vector(offsetX, offsetY);
+	}
 
   bool collisionDetectionStatic(AbstractGameObject gameObj) {
     for (AbstractGameObject obj in gameObjects) {

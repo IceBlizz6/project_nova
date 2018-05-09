@@ -5,27 +5,29 @@ import 'input_manager.dart';
 import 'keyboard_device.dart';
 import 'controllable_game_object.dart';
 import 'package:stagexl/stagexl.dart' as StageXL;
+import 'game_map.dart';
+import 'game_scene.dart';
 
 class GameCamera extends DisplayObjectContainer implements Animatable {
   num cameraSpeed = 400.0;
+  GameMap map;
   ControllableGameObject target;
   KeyboardDevice keyboardDevice;
   
   Vector cameraPos = new Vector(0, 0);
   Vector cameraSize = new Vector(1280, 720);
 
-  GameCamera(this.keyboardDevice) {
+  GameCamera(this.map, this.keyboardDevice) {
   }
 
   Vector getOffset() {
     return new Vector(cameraSize.x / 2, cameraSize.y / 2);
   }
   
-  void findTargetPosition(Vector target) {
+  Vector findTargetPosition(Vector target) {
     Vector currentCenter = cameraPos + getOffset();
     Vector offset = target - currentCenter;
-    cameraPos += offset;
-  
+    return cameraPos + offset;
   }
   
   StageXL.Rectangle<num> get cameraBounds {
@@ -67,7 +69,7 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
     var offset = getOffset();
     return -y;
   }
-
+  
   @override
   bool advanceTime(num time) {
     Vector move = new Vector(0, 0);
@@ -92,7 +94,10 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
       cameraPos += move.scale(10.0);
     } else if (target != null) {
       Vector v = target.position;
-      findTargetPosition(v);
+      cameraPos = findTargetPosition(v);
+
+			Vector offset = GameScene.checkMapBounds(cameraBounds, map.mapStart, map.mapEnd);
+			cameraPos += offset;
     }
     
     
