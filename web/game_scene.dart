@@ -30,6 +30,8 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
   Shape wireShape;
 
+  GameMap gameMap;
+
   GameScene(this._gameLoop, this.resourceManager) {
     gameObjects = new List<AbstractGameObject>();
     
@@ -39,7 +41,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     camera.x = 0.0;
     camera.y = 0.0;
     
-    GameMap gameMap = new GameMap(this);
+    this.gameMap = new GameMap(this);
     setupPlayerObject(new Vector(200, 200));
     addBox(new Vector(400, 300), new Vector(0.5, 2.0));
     addShipVisibility();
@@ -159,6 +161,8 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     //shape.y = 0;
 
     gameObj.visibleSolid = false;
+    
+    gameObj.collisionEnabled = false;
 
     addGameObject(gameObj);
   }
@@ -277,12 +281,50 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     for (int i = 1; i <= steps; i++) {
       Vector current = startPosition.lerp(targetPosition, i.toDouble() / steps);
       gameObj.position = current;
+      //gameObj.position += checkBounds(gameObj);
       bool collide = collisionDetectionStatic(gameObj);
       if (collide) {
         return lastPosition;
+      } else {
+        //lastPosition = gameObj.position;
       }
     }
     return targetPosition;
+  }
+  
+  Vector checkBounds(AbstractGameObject gameObject) {
+    return checkMapBounds(gameObject.boundsTransformed,
+      gameMap.mapStart, gameMap.mapEnd);
+  
+  }
+  
+  static Vector checkMapBounds(var boundsTransformed, Vector mapStart, Vector mapEnd) {
+    //x = Math.max(0, x);
+    
+    double offsetX = 0.0;
+    double offsetY = 0.0;
+  
+    if (boundsTransformed.left < mapStart.x) {
+      double displace = mapStart.x - boundsTransformed.left;
+      offsetX += displace;
+    }
+  
+    if (boundsTransformed.right > mapEnd.x) {
+      double displace = boundsTransformed.right - mapEnd.x;
+      offsetX -= displace;
+    }
+  
+    if (boundsTransformed.top < mapStart.y) {
+      double displace = mapStart.y - boundsTransformed.top;
+      offsetY += displace;
+    }
+  
+    if (boundsTransformed.bottom > mapEnd.y) {
+      double displace = boundsTransformed.bottom - mapEnd.y;
+      offsetY -= displace;
+    }
+    
+    return new Vector(offsetX, offsetY);
   }
 
   bool collisionDetectionStatic(AbstractGameObject gameObj) {

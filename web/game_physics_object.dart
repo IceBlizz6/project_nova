@@ -35,27 +35,7 @@ class GamePhysicsObject extends AbstractGameObject {
     position = scene.checkCollisionMovement(
         this, position, new Vector(position.x, targetPosition.y));
 
-    x = Math.max(0, x);
-
-    if (super.boundsTransformed.left < 0) {
-      double displace = -super.boundsTransformed.left;
-      x += displace;
-    }
-
-    if (super.boundsTransformed.right > 1280) {
-      double displace = super.boundsTransformed.right - 1280;
-      x -= displace;
-    }
-
-    if (super.boundsTransformed.top < 0) {
-      double displace = -super.boundsTransformed.top;
-      y += displace;
-    }
-
-    if (super.boundsTransformed.bottom > 720) {
-      double displace = super.boundsTransformed.bottom - 720;
-      y -= displace;
-    }
+    position += scene.checkBounds(this);
 
     return super.advanceTime(time);
   }

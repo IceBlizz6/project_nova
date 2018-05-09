@@ -19,6 +19,9 @@ class GameMap {
   
   double mapWidth = 2000.0;
   double mapHeight = 2000.0;
+  
+  Vector mapStart = new Vector(0, 0);
+  Vector mapEnd = new Vector(2000, 2000);
 
   GameMap(this.scene) {
     backgroundTex = scene.loadBitmap("terrain1");
