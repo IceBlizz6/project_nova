@@ -188,13 +188,16 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   List<Segment> getAllSegments() {
     List<Segment> segments = new List<Segment>();
 
-    double width = 1280.0;
-    double height = 720.0;
+    var cameraBounds = camera.cameraBounds;
+    double left = cameraBounds.left;
+    double right = cameraBounds.right;
+    double top = cameraBounds.top;
+    double bottom = cameraBounds.bottom;
 
-    Vector topLeft = new Vector(0, 0);
-    Vector topRight = new Vector(width, 0);
-    Vector bottomLeft = new Vector(0, height);
-    Vector bottomRight = new Vector(width, height);
+    Vector topLeft = new Vector(left, top);
+    Vector topRight = new Vector(right, top);
+    Vector bottomLeft = new Vector(left, bottom);
+    Vector bottomRight = new Vector(right, bottom);
 
     Segment s1 = new Segment(topLeft, topRight);
     Segment s2 = new Segment(topRight, bottomRight);
@@ -205,7 +208,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
     for (AbstractGameObject gameObject in gameObjects) {
       if (gameObject.visibleSolid) {
-        segments.addAll(gameObject.getSegments());
+        segments.addAll(gameObject.getSegments().where((p) => cameraBounds.contains(p.a.x, p.a.y) || cameraBounds.contains(p.b.x, p.b.y)));
       }
     }
     return segments;

@@ -4,6 +4,7 @@ import 'dart:html';
 import 'input_manager.dart';
 import 'keyboard_device.dart';
 import 'controllable_game_object.dart';
+import 'package:stagexl/stagexl.dart' as StageXL;
 
 class GameCamera extends DisplayObjectContainer implements Animatable {
   num cameraSpeed = 400.0;
@@ -26,6 +27,10 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
     cameraPos += offset;
   
   }
+  
+  StageXL.Rectangle<num> get cameraBounds {
+  	return new StageXL.Rectangle<num>(cameraPos.x, cameraPos.y, cameraSize.x, cameraSize.y);
+	}
 
   static num _move(num pos, num destination, num time, num speed) {
     num diff = (destination - pos).abs();
