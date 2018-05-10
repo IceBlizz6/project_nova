@@ -48,6 +48,10 @@ class GameLoop implements Animatable {
   void addJuggler(Animatable animatable) {
     _stage.juggler.add(animatable);
   }
+  
+  void removeJuggler(Animatable animatable) {
+    _stage.juggler.remove(animatable);
+  }
 
   void updateNetwork() {}
 

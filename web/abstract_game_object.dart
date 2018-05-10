@@ -11,6 +11,7 @@ import 'dart:math' as Math;
 import 'mouse_device.dart';
 import 'game_scene.dart';
 import 'collision_ray.dart';
+import 'projectile_game_object.dart';
 
 abstract class AbstractGameObject extends Sprite implements Animatable {
   GameScene scene;
@@ -30,9 +31,9 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 
   bool intersects(AbstractGameObject otherGameObject) {
     return collisionEnabled &&
-        otherGameObject.collisionEnabled &&
-        this.hitTestObject(
-            otherGameObject); //this.boundsTransformed.intersects(otherGameObject.boundsTransformed);
+      otherGameObject.collisionEnabled &&
+      this.hitTestObject(
+        otherGameObject);
   }
 
   List<Segment> getSegments() {
@@ -50,6 +51,10 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
     Segment s4 = new Segment(topLeft, bottomLeft);
 
     return [s1, s2, s3, s4];
+  }
+  
+  void onProjectileHit(ProjectileGameObject gameObject) {
+  
   }
 
   @override

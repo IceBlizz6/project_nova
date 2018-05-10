@@ -34,7 +34,11 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
   GameMap gameMap;
 
+  BitmapData laserBitmapData;
+
   GameScene(this._gameLoop, this.resourceManager) {
+    this.laserBitmapData = loadBitmap("laser1");
+    
     gameObjects = new List<AbstractGameObject>();
 
 		this.gameMap = new GameMap(this);
@@ -70,9 +74,9 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     drawTest(wireShape.graphics, pList, matrix.transformVector(playerObject.position));
   }
   
-  void addLaserShot(Vector position, Vector direction, double rotation) {
-    ProjectileGameObject projectile = new ProjectileGameObject(this, direction);
-    BitmapData laserBitmapData = loadBitmap("laser1");
+  void addLaserShot(AbstractGameObject source, Vector position, Vector direction, double rotation) {
+    ProjectileGameObject projectile = new ProjectileGameObject(this, source, direction);
+    
     Bitmap bitmap = new Bitmap(laserBitmapData);
     bitmap.scaleX = 2.0;
     bitmap.scaleY = 5.0;
@@ -197,12 +201,14 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   
   void addGameObject(AbstractGameObject gameObject) {
     gameObjects.add(gameObject);
-    //_gameLoop.add(gameObject);
     camera.addChild(gameObject);
-
-    if (gameObject is Animatable) {
-      _gameLoop.addJuggler(gameObject);
-    }
+    _gameLoop.addJuggler(gameObject);
+  }
+  
+  void removeGameObject(AbstractGameObject gameObject) {
+    gameObjects.remove(gameObject);
+    camera.removeChild(gameObject);
+    _gameLoop.removeJuggler(gameObject);
   }
 
   List<Segment> getAllSegments() {
@@ -293,6 +299,27 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     }
   }
 
+  AbstractGameObject collisionObjectCheck(AbstractGameObject gameObj, Vector startPosition, Vector targetPosition, List<AbstractGameObject> ignoreList) {
+    num stepSize = Math.min(gameObj.bounds.width, gameObj.bounds.height) / 2;
+    Vector travel = (targetPosition - startPosition);
+    num length = travel.length;
+    int steps = (length / stepSize).ceil();
+  
+    Vector lastPosition = startPosition;
+    for (int i = 1; i <= steps; i++) {
+      Vector current = startPosition.lerp(targetPosition, i.toDouble() / steps);
+      gameObj.position = current;
+      //gameObj.position += checkBounds(gameObj);
+      AbstractGameObject collisionObject = collisionDetectionStatic2(gameObj, ignoreList);
+      if (collisionObject != null) {
+        return collisionObject;
+      } else {
+        lastPosition = gameObj.position;
+      }
+    }
+    return null;
+  }
+
   Vector checkCollisionMovement(
       AbstractGameObject gameObj, Vector startPosition, Vector targetPosition) {
     num stepSize = Math.min(gameObj.bounds.width, gameObj.bounds.height) / 2;
@@ -375,9 +402,18 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 		return new Vector(offsetX, offsetY);
 	}
 
+  AbstractGameObject collisionDetectionStatic2(AbstractGameObject gameObj, List<AbstractGameObject> ignoreList) {
+    for (AbstractGameObject obj in gameObjects) {
+      if (obj != gameObj && !ignoreList.contains(obj) && gameObj.intersects(obj)) {
+        return obj;
+      }
+    }
+    return null;
+  }
+
   bool collisionDetectionStatic(AbstractGameObject gameObj) {
     for (AbstractGameObject obj in gameObjects) {
-      if (obj != gameObj && obj.intersects(gameObj)) {
+      if (obj != gameObj && gameObj.intersects(obj)) {
         return true;
       }
     }

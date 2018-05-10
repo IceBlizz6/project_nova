@@ -8,6 +8,7 @@ import 'package:stagexl/stagexl.dart';
 import 'dart:math' as Math;
 import 'gamepad_device.dart';
 import 'game_camera.dart';
+import 'projectile_game_object.dart';
 
 class ControllableGameObject extends GamePhysicsObject {
   GameCamera camera;
@@ -19,6 +20,7 @@ class ControllableGameObject extends GamePhysicsObject {
   ControllableGameObject(GameScene scene, this.camera, this.keyboardDevice, this.mouseDevice,
       this.gamepadDevice)
       : super(scene) {}
+      
 
   @override
   bool advanceTime(num time) {
@@ -77,11 +79,20 @@ class ControllableGameObject extends GamePhysicsObject {
       num dirY = Math.sin(rotation + Math.PI/2);
       
       Vector shotDirection = new Vector(dirX, dirY);
-      scene.addLaserShot(position, shotDirection, rotation);
+      scene.addLaserShot(this, position, shotDirection, rotation);
       //createLaser(playerObject.position + shotDirection.scale(playerObject.height/4), shotDirection);
   
     }
 
     super.advanceTime(time);
+  }
+  
+  @override
+  bool intersects(AbstractGameObject otherGameObject) {
+    if (otherGameObject is ProjectileGameObject) {
+      return false;
+    } else {
+      return super.intersects(otherGameObject);
+    }
   }
 }

@@ -3,15 +3,26 @@ import 'game_scene.dart';
 import 'package:stagexl/stagexl.dart';
 
 class ProjectileGameObject extends AbstractGameObject {
+	AbstractGameObject source;
 	Vector direction;
 	
-	ProjectileGameObject(GameScene scene, this.direction) : super(scene) {
-	
+	ProjectileGameObject(GameScene scene, this.source, this.direction) : super(scene) {
+		this.collisionEnabled = true;
 	}
 	
 	@override
 	bool advanceTime(num time) {
-		this.position += direction.scale(40.0);
+		Vector movement = direction.scale(30.0);
+		
+		AbstractGameObject collisionObject = scene.collisionObjectCheck(this, position, position + movement, [ source ]);
+		
+		if (collisionObject == null) {
+			this.position += movement;
+		} else {
+			collisionObject.onProjectileHit(this);
+			scene.removeGameObject(this);
+		}
+		
 		
 		return super.advanceTime(time);
 	}
