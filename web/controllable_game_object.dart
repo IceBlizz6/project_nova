@@ -17,9 +17,6 @@ class ControllableGameObject extends AbstractGameObject {
   GamepadDevice gamepadDevice;
   bool inputMode;
 
-  double maxSpeed = 50.0;
-  Vector velocity = new Vector(0, 0);
-
   ControllableGameObject(GameScene scene, RenderComponent renderComponent, this.camera, this.keyboardDevice, this.mouseDevice,
       this.gamepadDevice)
       : super(scene, renderComponent) {}
@@ -27,15 +24,12 @@ class ControllableGameObject extends AbstractGameObject {
 
   @override
   bool advanceTime(num time) {
-    Vector acceleration;
-    acceleration = new Vector(0, 0);
+		handleRotation();
+		//handleShooting();
+		
+		
+    Vector acceleration = new Vector(0, 0);
     double accelerationPower = 20.0;
-
-    //double val =
-    //double stickX = gamepadDevice.stickValue(0, 0);
-    //double stickY = gamepadDevice.stickValue(0, 1);
-    //acceleration += new Vector(stickX, stickY);
-    //querySelector('#text').text = gamepadDevice.stickValue(0, 0).toString() + ", " + gamepadDevice.stickValue(0, 1).toString();
 
     if (keyboardDevice.isDown(KeyCode.W)) {
       acceleration += new Vector(0, -1);
@@ -52,55 +46,48 @@ class ControllableGameObject extends AbstractGameObject {
     if (keyboardDevice.isDown(KeyCode.D)) {
       acceleration += new Vector(1, 0);
     }
+    
+    if (acceleration != new Vector.zero()) {
+			acceleration = acceleration.normalize();
+		}
 
     acceleration = acceleration.scale(accelerationPower);
 
-    num velX = velocity.x;
-    num velY = velocity.y;
 
-    if (acceleration.x == 0) {
-      velX += -velX * 0.1;
-    }
-    if (acceleration.y == 0) {
-      velY += -velY * 0.1;
-    }
-
-    velocity = new Vector(velX, velY);
+    Vector force = acceleration.scale(100.0);
     
-
-    num mouseX = stage.mouseX;
-    num mouseY = stage.mouseY;
-    var m = camera.globalTransformationMatrix;
-    m.invert();
-    Vector transformedMousePos = m.transformVector(new Vector(mouseX, mouseY));
+    //collisionComponent.setVelocity();
+    collisionComponent.applyForce(force.x, force.y);
     
-    //new Vector(mouseX - x, mouseY - y)
-    Vector dir = (transformedMousePos - position).normalize();
-    num rotValue = ((dir.degrees - 90) / 180) * Math.PI;
-    rotation = rotValue;
-
-    if (mouseDevice.isPressed(0)) {
-      num dirX = Math.cos(rotation + Math.PI/2);
-      num dirY = Math.sin(rotation + Math.PI/2);
-      
-      Vector shotDirection = new Vector(dirX, dirY);
-      scene.addLaserShot(this, position, shotDirection, rotation);
-      //createLaser(playerObject.position + shotDirection.scale(playerObject.height/4), shotDirection);
-  
-    }
-
-    velocity += acceleration.scale(time);
-
-    if (velocity.length > maxSpeed) {
-      velocity = velocity.normalize().scale(maxSpeed);
-    }
-    
-    Vector force = velocity.scale(100.0);
-    
-    collisionComponent.setVelocity(force.x, force.y);
+    collisionComponent.updateFriction();
 
     super.advanceTime(time);
   }
+  
+  void handleRotation() {
+		num mouseX = stage.mouseX;
+		num mouseY = stage.mouseY;
+		var m = camera.globalTransformationMatrix;
+		m.invert();
+		Vector transformedMousePos = m.transformVector(new Vector(mouseX, mouseY));
+	
+		//new Vector(mouseX - x, mouseY - y)
+		Vector dir = (transformedMousePos - position).normalize();
+		num rotValue = ((dir.degrees - 90) / 180) * Math.PI;
+		rotation = rotValue;
+	}
+	
+	void handleShooting() {
+		if (mouseDevice.isPressed(0)) {
+			num dirX = Math.cos(rotation + Math.PI/2);
+			num dirY = Math.sin(rotation + Math.PI/2);
+			
+			Vector shotDirection = new Vector(dirX, dirY);
+			scene.addLaserShot(this, position, shotDirection, rotation);
+			//createLaser(playerObject.position + shotDirection.scale(playerObject.height/4), shotDirection);
+			
+		}
+	}
   
   @override
   bool intersects(AbstractGameObject otherGameObject) {
