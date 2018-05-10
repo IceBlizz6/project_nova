@@ -1,6 +1,5 @@
 
 --- Important ---
-panning camera (player in center) (rubber effect?)
 bullets colliding with terrain
 light around visible areas / shadows around invisible areas
 

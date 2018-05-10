@@ -1,7 +1,76 @@
+* fixing collision detection - getting stuck
+
+
+
+* is bounding collision accurate enough for texture?
+
+* does visibility still work on scaled sprites??
+
+------------------------
+
+
+
+* bullets collide with obstackles - not the source player!!
+
+* bullets also visibility object? AND networking object
+
+
+
+
+* put collision in own class, dont mess up GameScene more
+
+
+
+--- Structure ---
+Player
+* ControllableGameobject - for this player
+* NetworkGameObject - for other players
+* VisibilityGameObject - for players on other teams
+
+Projectile
+* projectileGameObject - for this player
+* NetworkGameObject - for other players
+* VisibilityGameObject - for players on other teams
+
+
+StaticGameObject (like tables, boxes)
+* VisibilityGameObject - for all
+
+TerrainGameObject (like walls, rooms)
+*
+
+
+
+
+
+GameObject
+* Render: SightVisibility / FullyVisible - updates render logic
+* Position: StaticPosition / NetworkPosition / ControlledPosition - updates object position
+* Collision: CollisionEnable, NoCollision - updates collision data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //var shape = new Shape();
 		//shape.graphics.ellipse(100, 100, 400, 300);
 		//shape.graphics.fillPattern(new GraphicsPattern.noRepeat(backgroundTex.renderTextureQuad));
 		//stage.addChild(shape);
+
+
+http://ncase.me/sight-and-light/
 
 
 Game object properties:
@@ -113,56 +182,8 @@ FaerieFrost912
 ------------------------------------------------
 
 
-  //BitmapData spriteData = resourceManager.getBitmapData("spaceship1");
-  //BitmapData starData = resourceManager.getBitmapData("star1");
-  //BitmapData laserData = resourceManager.getBitmapData("laser1");
-
-
-
-  //Sprite background = new Sprite();
-
-  background.addChild(new Bitmap(backgroundData));
-  background.width = 1280;
-  background.height = 720;
-
-  GameObject playerObject = new GameObject();
-  playerObject.addChild(new Bitmap(spriteData));
-  playerObject.pivotX = playerObject.width / 2;
-  playerObject.pivotY = playerObject.height / 2;
-  playerObject.scaleX = 0.6;
-  playerObject.scaleY = 0.6;
-
-  playerObject.x = 500;
-  playerObject.y = 200;
-
-  //GameCamera camera = new GameCamera(stage);
-  //stage.addChild(camera);
-  stage.addChild(background);
-  stage.addChild(playerObject);
-
-  //camera.width = 1280;
-  //camera.height = 720;
-
-  //stage.juggler.add(camera);
-
-  //camera.target = spaceshipSprite;
-  //Vector targetOffset = camera.getOffset();
-  //camera.pivotX = -targetOffset.x;
-  //camera.pivotY = -targetOffset.y;
-
-  //camera.width = stage.width;
-  //camera.height = stage.height;
-  //camera.pivotX = camera.width / 2;
-  //camera.pivotY = camera.height / 2;
 
   //html.querySelector('#text').text = stage.sourceWidth.toString();
-
-  //camera.x -= 200;
-
-  //stage.addChild(spaceshipSprite);
-
-  // See more examples:
-  // https://github.com/bp74/StageXL_Samples
 
   //window.onKeyDown.listen((event) {
   //  canvas.requestFullscreen();
