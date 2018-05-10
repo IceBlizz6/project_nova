@@ -16,6 +16,8 @@ class ControllableGameObject extends AbstractGameObject {
   MouseDevice mouseDevice;
   GamepadDevice gamepadDevice;
   bool inputMode;
+  
+  
 
   ControllableGameObject(GameScene scene, RenderComponent renderComponent, this.camera, this.keyboardDevice, this.mouseDevice,
       this.gamepadDevice)
@@ -24,9 +26,12 @@ class ControllableGameObject extends AbstractGameObject {
 
   @override
   bool advanceTime(num time) {
+  
 		handleRotation();
 		handleShooting();
 		
+		//print(collisionComponent.getScaledPoints());
+		//print(collisionComponent.points[0].y - collisionComponent.points[1].y);
 		
     Vector acceleration = new Vector(0, 0);
 
@@ -50,7 +55,7 @@ class ControllableGameObject extends AbstractGameObject {
 			acceleration = acceleration.normalize();
 		}
 
-    Vector force = acceleration.scale(2000.0);
+    Vector force = acceleration.scale(0.04);
     
     //collisionComponent.setVelocity();
     collisionComponent.applyForce(force.x, force.y);

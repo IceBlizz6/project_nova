@@ -90,6 +90,8 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     bitmap.scaleY = 5.0;
 
     ProjectileGameObject projectile = new ProjectileGameObject(this, new FullRenderComponent(laserBitmapData, bitmap), source, direction);
+    projectile.createCollisionData(new Vector(0.0, 0.0), new Vector(1.0, 1.0), box2d.BodyType.DYNAMIC, rotation);
+    projectile.collisionComponent.body.setBullet(true);
     
     //projectile.addChild(bitmap);
     

@@ -34,7 +34,7 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 	double boundsWidth;
 	double boundsHeight;
 	
-	Vector collisionOffset = new Vector.zero();
+	//Vector collisionOffset = new Vector.zero();
 
   AbstractGameObject(this.scene, this.renderComponent) {
   	this.addChild(renderComponent);
@@ -42,14 +42,14 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 	
 	void createCollisionData(Vector offset, Vector scale, box2d.BodyType type, [ double rotation = 0.0 ]) {
   	
-  	this.collisionOffset = offset;
+  	//this.collisionOffset = offset;
 		
 		this.collisionShape = new Shape();
 		this.scene.camera.addChild(collisionShape);
 		this.boundsWidth = bounds.width * scale.x;
 		this.boundsHeight = bounds.height * scale.y;
 		
-  
+  //
 		this.collisionComponent = new BoxCollisionComponent(scene.world, offset.x, offset.y, boundsWidth, boundsHeight, type, rotation);
 		collisionComponent.setPosition(this.x, this.y);
 	}
@@ -108,13 +108,14 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 			double myX = collisionComponent.getPosition().x;
 			double myY = collisionComponent.getPosition().y;
 			
+			var scaledPoints = collisionComponent.getScaledPoints();
+			
 			collisionShape.graphics.beginPath();
-			collisionShape.graphics.moveTo(collisionComponent.points[0].x + myX,
-				collisionComponent.points[0].y + myY);
+			collisionShape.graphics.moveTo(scaledPoints[0].x + myX, scaledPoints[0].y + myY);
 			
 			for (int i = 1;i<collisionComponent.points.length;i++) {
-				collisionShape.graphics.lineTo(collisionComponent.points[i].x + myX,
-					collisionComponent.points[i].y + myY);
+				collisionShape.graphics.lineTo(scaledPoints[i].x + myX,
+					scaledPoints[i].y + myY);
 			}
 			collisionShape.graphics.closePath();
 			

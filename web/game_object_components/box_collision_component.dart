@@ -1,6 +1,8 @@
 import 'package:box2d/box2d.dart';
 
 class BoxCollisionComponent {
+	static final double globalMultiplier = 0.01;
+	
 	Body body;
 	PolygonShape shape;
 	List<Vector2> points;
@@ -9,7 +11,7 @@ class BoxCollisionComponent {
 	BoxCollisionComponent(World world, double pivotX, double pivotY,
 		double sizeX, double sizeY, BodyType type, [ double rotation = 0.0 ]) {
 		
-		this.pivot = new Vector2(pivotX, pivotY);
+		this.pivot = new Vector2(pivotX, pivotY) * globalMultiplier;
 		BodyDef def = new BodyDef();
 
 		def.type = type;
@@ -17,9 +19,9 @@ class BoxCollisionComponent {
 		this.shape = new PolygonShape();
 
 		Vector2 leftTop = new Vector2(0.0, 0.0);
-		Vector2 leftBot = new Vector2(0.0, sizeY);
-		Vector2 rightTop = new Vector2(sizeX, 0.0);
-		Vector2 rightBot = new Vector2(sizeX, sizeY);
+		Vector2 leftBot = new Vector2(0.0, sizeY * globalMultiplier);
+		Vector2 rightTop = new Vector2(sizeX * globalMultiplier, 0.0);
+		Vector2 rightBot = new Vector2(sizeX * globalMultiplier, sizeY * globalMultiplier);
 		
 		var rawList = [ leftTop, leftBot, rightTop, rightBot ];
 		
@@ -29,10 +31,7 @@ class BoxCollisionComponent {
 		
 		body = world.createBody(def);
 		
-		MassData massData = new MassData();
-		massData.mass = 0.1;
-		massData.I = 0.01;
-		body.setMassData(massData);
+	
 		
 		body.createFixtureFromShape(shape);
 		
@@ -40,12 +39,15 @@ class BoxCollisionComponent {
 	}
 	
 	Vector2 getPosition() {
-		return body.position;
-		
+		return body.position * 1.0/globalMultiplier - pivot * 1.0/globalMultiplier ;
+	}
+	
+	List<Vector2> getScaledPoints() {
+		return points.map((e) => e * 1.0/globalMultiplier + pivot * 1.0/globalMultiplier).toList();
 	}
 	
 	void setPosition(double posX, double posY) {
-		body.setTransform(new Vector2(posX, posY) + pivot, 0.0);
+		body.setTransform(new Vector2(posX, posY) * globalMultiplier + pivot, 0.0);
 	}
 	
 	void applyForce(double x, double y) {

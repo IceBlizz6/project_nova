@@ -6,6 +6,7 @@ import 'game_object_components/render_component.dart';
 class ProjectileGameObject extends AbstractGameObject {
 	AbstractGameObject source;
 	Vector direction;
+	bool speedInit = false;
 	
 	ProjectileGameObject(GameScene scene, RenderComponent renderComponent, this.source, this.direction) : super(scene, renderComponent) {
 		this.collisionEnabled = true;
@@ -13,12 +14,14 @@ class ProjectileGameObject extends AbstractGameObject {
 	
 	@override
 	bool advanceTime(num time) {
-		Vector movement = direction.scale(30.0);
-		
-		//AbstractGameObject collisionObject = scene.collisionObjectCheck(this, position, position + movement, [ source ]);
-	
-		
-		
+
+		if (!speedInit) {
+			double power = 18.0;
+			Vector force = direction.scale(power);
+			collisionComponent.applyForce(force.x, force.y);
+			speedInit = true;
+		}
+
 		return super.advanceTime(time);
 	}
 }
