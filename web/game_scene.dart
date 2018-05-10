@@ -17,10 +17,11 @@ import 'game_physics_object.dart';
 import 'controllable_game_object.dart';
 import 'main.dart';
 import 'game_map.dart';
-import 'visibility_game_object.dart';
 import 'collision_ray.dart';
 import 'package:stagexl/stagexl.dart' as StageXL;
 import 'projectile_game_object.dart';
+import 'game_object_components/full_render_component.dart';
+import 'game_object_components/partial_render_component.dart';
 
 class GameScene extends DisplayObjectContainer implements Animatable {
   GameLoop _gameLoop;
@@ -75,13 +76,15 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   }
   
   void addLaserShot(AbstractGameObject source, Vector position, Vector direction, double rotation) {
-    ProjectileGameObject projectile = new ProjectileGameObject(this, source, direction);
+    
     
     Bitmap bitmap = new Bitmap(laserBitmapData);
     bitmap.scaleX = 2.0;
     bitmap.scaleY = 5.0;
+
+    ProjectileGameObject projectile = new ProjectileGameObject(this, new FullRenderComponent(laserBitmapData, bitmap), source, direction);
     
-    projectile.addChild(bitmap);
+    //projectile.addChild(bitmap);
     
     projectile.pivotX = bitmap.width / 2;
     projectile.pivotY = bitmap.width / 2;
@@ -132,11 +135,11 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     bitmap.scaleY = 0.3;
 
     ControllableGameObject gameObj = new ControllableGameObject(
-        this, camera,
+        this, new FullRenderComponent(bitmapData, bitmap), camera,
         _gameLoop.keyboardDevice,
         _gameLoop.mouseDevice,
         _gameLoop.gamepadDevice);
-    gameObj.addChild(bitmap);
+    //gameObj.addChild(bitmap);
 
     //gameObj.pivotX = gameObj.width / 2;
     //gameObj.pivotY = gameObj.height / 2;
@@ -154,8 +157,9 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     BitmapData bitmapData = loadBitmap("box");
     Bitmap bitmap = new Bitmap(bitmapData);
 
-    GamePhysicsObject gameObj = new GamePhysicsObject(this);
-    gameObj.addChild(bitmap);
+    GamePhysicsObject gameObj = new GamePhysicsObject(this,
+      new FullRenderComponent(bitmapData, bitmap));
+    //gameObj.addChild(bitmap);
 
     gameObj.scaleX = scale.x;
     gameObj.scaleY = scale.y;
@@ -170,16 +174,18 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   void addShipVisibility() {
     BitmapData bitmapData = loadBitmap("spaceship1");
 
-    Shape shape = new Shape();
+    
 
     //shape.graphics.rect(0, 0, 1280, 720);
 
     //shape.graphics.fillPattern(new GraphicsPattern.noRepeat(bitmapData.renderTextureQuad));
     //stage.addChild(shape);
 
-    VisibilityGameObject gameObj =
-        new VisibilityGameObject(this, camera, shape, bitmapData, playerObject);
-    gameObj.addChild(shape);
+    GamePhysicsObject gameObj = new  GamePhysicsObject(this, new PartialRenderComponent(this, camera, bitmapData, playerObject));
+
+    //VisibilityGameObject gameObj =
+      //  new VisibilityGameObject(this, camera, shape, bitmapData, playerObject);
+    //gameObj.addChild(shape);
 
     gameObj.scaleX = 1.0;
     gameObj.scaleY = 1.0;

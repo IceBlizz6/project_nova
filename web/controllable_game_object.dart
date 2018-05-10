@@ -9,6 +9,7 @@ import 'dart:math' as Math;
 import 'gamepad_device.dart';
 import 'game_camera.dart';
 import 'projectile_game_object.dart';
+import 'game_object_components/render_component.dart';
 
 class ControllableGameObject extends GamePhysicsObject {
   GameCamera camera;
@@ -17,9 +18,9 @@ class ControllableGameObject extends GamePhysicsObject {
   GamepadDevice gamepadDevice;
   bool inputMode;
 
-  ControllableGameObject(GameScene scene, this.camera, this.keyboardDevice, this.mouseDevice,
+  ControllableGameObject(GameScene scene, RenderComponent renderComponent, this.camera, this.keyboardDevice, this.mouseDevice,
       this.gamepadDevice)
-      : super(scene) {}
+      : super(scene, renderComponent) {}
       
 
   @override

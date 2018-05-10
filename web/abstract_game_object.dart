@@ -12,11 +12,22 @@ import 'mouse_device.dart';
 import 'game_scene.dart';
 import 'collision_ray.dart';
 import 'projectile_game_object.dart';
+import 'package:stagexl/stagexl.dart' as StageXL;
+import 'game_object_components/render_component.dart';
 
 abstract class AbstractGameObject extends Sprite implements Animatable {
   GameScene scene;
+	bool collisionEnabled = false; // false to let players walk through
+	
+	bool visibleSolid = false; // true to hide objects behind this (can't see through it)
 
-  AbstractGameObject(this.scene) {}
+	RenderComponent renderComponent; // full or partial render of the object
+
+	bool isNetworkControlled = false; // true to query position updates from network
+
+  AbstractGameObject(this.scene, this.renderComponent) {
+  	this.addChild(renderComponent);
+	}
 
   Vector get position => new Vector(x, y);
 
@@ -24,10 +35,6 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
     x = value.x;
     y = value.y;
   }
-
-  bool collisionEnabled = false; // false to let players walk through
-
-  bool visibleSolid = false; // true to hide objects behind object
 
   bool intersects(AbstractGameObject otherGameObject) {
     return collisionEnabled &&
@@ -57,8 +64,14 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
   
   }
 
+	@override
+	get bounds {
+  	return renderComponent.componentBounds;
+	}
+  
   @override
   bool advanceTime(num time) {
+  	renderComponent.renderUpdate(this.globalTransformationMatrix);
     return true;
   }
 }
