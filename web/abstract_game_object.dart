@@ -40,7 +40,7 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
   	this.addChild(renderComponent);
 	}
 	
-	void createCollisionData(Vector offset, Vector scale, box2d.BodyType type) {
+	void createCollisionData(Vector offset, Vector scale, box2d.BodyType type, [ double rotation = 0.0 ]) {
   	
   	this.collisionOffset = offset;
 		
@@ -50,7 +50,7 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 		this.boundsHeight = bounds.height * scale.y;
 		
   
-		this.collisionComponent = new BoxCollisionComponent(scene.world, offset.x, offset.y, boundsWidth, boundsHeight, type);
+		this.collisionComponent = new BoxCollisionComponent(scene.world, offset.x, offset.y, boundsWidth, boundsHeight, type, rotation);
 		collisionComponent.setPosition(this.x, this.y);
 	}
 

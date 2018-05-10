@@ -25,11 +25,10 @@ class ControllableGameObject extends AbstractGameObject {
   @override
   bool advanceTime(num time) {
 		handleRotation();
-		//handleShooting();
+		handleShooting();
 		
 		
     Vector acceleration = new Vector(0, 0);
-    double accelerationPower = 20.0;
 
     if (keyboardDevice.isDown(KeyCode.W)) {
       acceleration += new Vector(0, -1);
@@ -51,10 +50,7 @@ class ControllableGameObject extends AbstractGameObject {
 			acceleration = acceleration.normalize();
 		}
 
-    acceleration = acceleration.scale(accelerationPower);
-
-
-    Vector force = acceleration.scale(100.0);
+    Vector force = acceleration.scale(2000.0);
     
     //collisionComponent.setVelocity();
     collisionComponent.applyForce(force.x, force.y);

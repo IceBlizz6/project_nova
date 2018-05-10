@@ -7,11 +7,11 @@ class BoxCollisionComponent {
 	Vector2 pivot;
 	
 	BoxCollisionComponent(World world, double pivotX, double pivotY,
-		double sizeX, double sizeY, BodyType type) {
+		double sizeX, double sizeY, BodyType type, [ double rotation = 0.0 ]) {
 		
 		this.pivot = new Vector2(pivotX, pivotY);
 		BodyDef def = new BodyDef();
-		
+
 		def.type = type;
 		
 		this.shape = new PolygonShape();
@@ -22,15 +22,19 @@ class BoxCollisionComponent {
 		Vector2 rightBot = new Vector2(sizeX, sizeY);
 		
 		var rawList = [ leftTop, leftBot, rightTop, rightBot ];
-
-		shape.set(rawList, 4);
+		
+		var mat = new Matrix2.rotation(rotation);
+		
+		shape.set(rawList.map((e) => mat.transform(e)).toList(), 4);
 		
 		body = world.createBody(def);
-		body.createFixtureFromShape(shape, 0.5);
-
-		MassData d = new MassData();
-		d.mass = 0.5;
-		body.setMassData(d);
+		
+		MassData massData = new MassData();
+		massData.mass = 0.1;
+		massData.I = 0.01;
+		body.setMassData(massData);
+		
+		body.createFixtureFromShape(shape);
 		
 		this.points = shape.vertices;
 	}
@@ -45,7 +49,8 @@ class BoxCollisionComponent {
 	}
 	
 	void applyForce(double x, double y) {
-		body.applyForceToCenter(new Vector2(x, y));
+		body.applyLinearImpulse(new Vector2(x, y), body.worldCenter, true);
+		//body.applyForceToCenter(new Vector2(x, y));
 	}
 	
 	void updateFriction() {
