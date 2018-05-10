@@ -51,7 +51,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     camera.addChild(gameMap);
     
     
-    setupPlayerObject(new Vector(200, 200));
+    setupPlayerObject(new Vector(700, 200));
     addBox(new Vector(400, 300), new Vector(0.5, 2.0));
 
 		addBox(new Vector(100, 800), new Vector(4.0, 1.0));
@@ -187,8 +187,8 @@ class GameScene extends DisplayObjectContainer implements Animatable {
       //  new VisibilityGameObject(this, camera, shape, bitmapData, playerObject);
     //gameObj.addChild(shape);
 
-    gameObj.scaleX = 1.0;
-    gameObj.scaleY = 1.0;
+    gameObj.scaleX = 3.0;
+    gameObj.scaleY = 3.0;
 
     //gameObj.position = new Vector(300, 0);
     //shape.x = 300;

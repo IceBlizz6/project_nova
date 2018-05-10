@@ -39,12 +39,13 @@ class PartialRenderComponent extends Shape implements RenderComponent {
 		matrix.invert();
 		
 		var matrix2 = camera.globalTransformationMatrix;
+
+		matrix2.concat(matrix);
 		
 		this.applyCache(0, 0, bitmapData.width, bitmapData.height);
 		
-		List<Vector> pList = polygons.map((el) => matrix.transformVector(el.v)).toList();
-		List<Vector> pList2 = pList.map((el) => matrix2.transformVector(el)).toList();
-		_drawTest(this.graphics, pList2);
+		List<Vector> pList = polygons.map((el) => matrix2.transformVector(el.v)).toList();
+		_drawTest(this.graphics, pList);
 	}
 	
 	void _drawTest(Graphics ctx, List<Vector> polygon) {
