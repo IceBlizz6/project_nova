@@ -15,14 +15,8 @@ class ProjectileGameObject extends AbstractGameObject {
 	bool advanceTime(num time) {
 		Vector movement = direction.scale(30.0);
 		
-		AbstractGameObject collisionObject = scene.collisionObjectCheck(this, position, position + movement, [ source ]);
-		
-		if (collisionObject == null) {
-			this.position += movement;
-		} else {
-			collisionObject.onProjectileHit(this);
-			scene.removeGameObject(this);
-		}
+		//AbstractGameObject collisionObject = scene.collisionObjectCheck(this, position, position + movement, [ source ]);
+	
 		
 		
 		return super.advanceTime(time);

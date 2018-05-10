@@ -10,7 +10,6 @@ import 'game_camera.dart';
 import 'dart:math' as Math;
 import 'mouse_device.dart';
 import 'game_loop.dart';
-import 'game_physics_object.dart';
 import 'game_scene.dart';
 
 class GameMap extends DisplayObjectContainer {

@@ -9,7 +9,6 @@ import 'dart:math';
 import 'game_camera.dart';
 import 'dart:math' as Math;
 import 'mouse_device.dart';
-import 'game_physics_object.dart';
 import 'game_socket.dart';
 import 'network_object.dart';
 import 'game_scene.dart';

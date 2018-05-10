@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   stagexl: ^1.1.0
+  box2d:
 
 dev_dependencies:
   browser: ^0.10.0

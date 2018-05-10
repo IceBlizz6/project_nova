@@ -14,6 +14,8 @@ import 'collision_ray.dart';
 import 'projectile_game_object.dart';
 import 'package:stagexl/stagexl.dart' as StageXL;
 import 'game_object_components/render_component.dart';
+import 'game_object_components/box_collision_component.dart';
+import 'package:box2d/box2d.dart' as box2d;
 
 abstract class AbstractGameObject extends Sprite implements Animatable {
   GameScene scene;
@@ -27,12 +29,29 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 	
 	Shape collisionShape;
 
+	BoxCollisionComponent collisionComponent;
+	
+	double boundsWidth;
+	double boundsHeight;
+	
+	Vector collisionOffset = new Vector.zero();
+
   AbstractGameObject(this.scene, this.renderComponent) {
   	this.addChild(renderComponent);
+	}
+	
+	void createCollisionData(Vector offset, Vector scale, box2d.BodyType type) {
   	
-  	this.collisionShape = new Shape();
-  	this.scene.camera.addChild(collisionShape);
-  	
+  	this.collisionOffset = offset;
+		
+		this.collisionShape = new Shape();
+		this.scene.camera.addChild(collisionShape);
+		this.boundsWidth = bounds.width * scale.x;
+		this.boundsHeight = bounds.height * scale.y;
+		
+  
+		this.collisionComponent = new BoxCollisionComponent(scene.world, offset.x, offset.y, boundsWidth, boundsHeight, type);
+		collisionComponent.setPosition(this.x, this.y);
 	}
 
   Vector get position => new Vector(x, y);
@@ -40,6 +59,10 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
   void set position(Vector value) {
     x = value.x;
     y = value.y;
+    if (collisionComponent != null) {
+			this.collisionComponent.setPosition(x, y);
+		}
+		
   }
 
   bool intersects(AbstractGameObject otherGameObject) {
@@ -79,11 +102,35 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
   bool advanceTime(num time) {
   	renderComponent.renderUpdate(this.globalTransformationMatrix);
   	
-  	collisionShape.graphics.clear();
-		collisionShape.graphics.rect(boundsTransformed.left, boundsTransformed.top, boundsTransformed.width, boundsTransformed.height);
-		//collisionShape.graphics.
-		collisionShape.graphics.strokeColor(Color.Blue);
-  	
+  	if (collisionShape != null) {
+			collisionShape.graphics.clear();
+			
+			double myX = collisionComponent.getPosition().x;
+			double myY = collisionComponent.getPosition().y;
+			
+			collisionShape.graphics.beginPath();
+			collisionShape.graphics.moveTo(collisionComponent.points[0].x + myX,
+				collisionComponent.points[0].y + myY);
+			
+			for (int i = 1;i<collisionComponent.points.length;i++) {
+				collisionShape.graphics.lineTo(collisionComponent.points[i].x + myX,
+					collisionComponent.points[i].y + myY);
+			}
+			collisionShape.graphics.closePath();
+			
+			//collisionShape.graphics.rect(this.x + collisionOffset.x, this.y + collisionOffset.y, boundsWidth, boundsHeight);
+			//collisionShape.graphics.
+			collisionShape.graphics.strokeColor(Color.Blue);
+		}
+  
+	
+		//collisionComponent.setPosition(this.x, this.y);
+		if (collisionComponent != null) {
+			var updatedPos = collisionComponent.getPosition() - collisionComponent.pivot;
+			this.x = updatedPos.x;
+			this.y = updatedPos.y;
+		}
+		
     return true;
   }
 }

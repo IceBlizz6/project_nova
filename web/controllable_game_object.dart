@@ -3,7 +3,6 @@ import 'dart:html';
 import 'game_scene.dart';
 import 'keyboard_device.dart';
 import 'mouse_device.dart';
-import 'game_physics_object.dart';
 import 'package:stagexl/stagexl.dart';
 import 'dart:math' as Math;
 import 'gamepad_device.dart';
@@ -11,12 +10,15 @@ import 'game_camera.dart';
 import 'projectile_game_object.dart';
 import 'game_object_components/render_component.dart';
 
-class ControllableGameObject extends GamePhysicsObject {
+class ControllableGameObject extends AbstractGameObject {
   GameCamera camera;
   KeyboardDevice keyboardDevice;
   MouseDevice mouseDevice;
   GamepadDevice gamepadDevice;
   bool inputMode;
+
+  double maxSpeed = 50.0;
+  Vector velocity = new Vector(0, 0);
 
   ControllableGameObject(GameScene scene, RenderComponent renderComponent, this.camera, this.keyboardDevice, this.mouseDevice,
       this.gamepadDevice)
@@ -25,6 +27,7 @@ class ControllableGameObject extends GamePhysicsObject {
 
   @override
   bool advanceTime(num time) {
+    Vector acceleration;
     acceleration = new Vector(0, 0);
     double accelerationPower = 20.0;
 
@@ -63,6 +66,7 @@ class ControllableGameObject extends GamePhysicsObject {
     }
 
     velocity = new Vector(velX, velY);
+    
 
     num mouseX = stage.mouseX;
     num mouseY = stage.mouseY;
@@ -84,6 +88,16 @@ class ControllableGameObject extends GamePhysicsObject {
       //createLaser(playerObject.position + shotDirection.scale(playerObject.height/4), shotDirection);
   
     }
+
+    velocity += acceleration.scale(time);
+
+    if (velocity.length > maxSpeed) {
+      velocity = velocity.normalize().scale(maxSpeed);
+    }
+    
+    Vector force = velocity.scale(100.0);
+    
+    collisionComponent.setVelocity(force.x, force.y);
 
     super.advanceTime(time);
   }

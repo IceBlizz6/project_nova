@@ -13,7 +13,6 @@ import 'game_camera.dart';
 import 'dart:math' as Math;
 import 'mouse_device.dart';
 import 'game_loop.dart';
-import 'game_physics_object.dart';
 import 'controllable_game_object.dart';
 import 'main.dart';
 import 'game_map.dart';
@@ -22,6 +21,8 @@ import 'package:stagexl/stagexl.dart' as StageXL;
 import 'projectile_game_object.dart';
 import 'game_object_components/full_render_component.dart';
 import 'game_object_components/partial_render_component.dart';
+import 'package:box2d/box2d.dart' as box2d;
+import 'static_game_object.dart';
 
 class GameScene extends DisplayObjectContainer implements Animatable {
   GameLoop _gameLoop;
@@ -31,13 +32,17 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   // Map<String, NetworkObject> networkSprites = new Map<String, NetworkObject>();
   GameCamera camera;
 
-  Shape wireShape;
+  StageXL.Shape wireShape;
+
+  box2d.World world;
 
   GameMap gameMap;
 
   BitmapData laserBitmapData;
 
   GameScene(this._gameLoop, this.resourceManager) {
+    this.world = new box2d.World.withGravity(new box2d.Vector2(0.0, 0.0));
+    
     this.laserBitmapData = loadBitmap("laser1");
     
     gameObjects = new List<AbstractGameObject>();
@@ -60,7 +65,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     
     camera.target = playerObject;
 
-    this.wireShape = new Shape();
+    this.wireShape = new StageXL.Shape();
     this.addChild(wireShape);
   }
 
@@ -73,6 +78,8 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     var matrix = camera.globalTransformationMatrix;
     List<Vector> pList = polygons.map((el) => matrix.transformVector(el.v)).toList();
     drawTest(wireShape.graphics, pList, matrix.transformVector(playerObject.position));
+
+    world.stepDt(time, 10, 10);
   }
   
   void addLaserShot(AbstractGameObject source, Vector position, Vector direction, double rotation) {
@@ -143,6 +150,9 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
     //gameObj.pivotX = gameObj.width / 2;
     //gameObj.pivotY = gameObj.height / 2;
+    
+    //-
+    gameObj.createCollisionData(-new Vector(gameObj.bounds.width/2.0, gameObj.bounds.height/2.0), new Vector(1.0, 1.0), box2d.BodyType.DYNAMIC);
 
     gameObj.position = startingPosition;
 
@@ -157,7 +167,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     BitmapData bitmapData = loadBitmap("box");
     Bitmap bitmap = new Bitmap(bitmapData);
 
-    GamePhysicsObject gameObj = new GamePhysicsObject(this,
+    StaticGameObject gameObj = new StaticGameObject(this,
       new FullRenderComponent(bitmapData, bitmap));
     //gameObj.addChild(bitmap);
 
@@ -168,6 +178,9 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     gameObj.visibleSolid = true;
     gameObj.collisionEnabled = true;
 
+    
+    gameObj.createCollisionData(new Vector(0, 0),
+      new Vector(scale.x, scale.y), box2d.BodyType.STATIC);
     addGameObject(gameObj);
   }
 
@@ -181,7 +194,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     //shape.graphics.fillPattern(new GraphicsPattern.noRepeat(bitmapData.renderTextureQuad));
     //stage.addChild(shape);
 
-    GamePhysicsObject gameObj = new  GamePhysicsObject(this, new PartialRenderComponent(this, camera, bitmapData, playerObject));
+    StaticGameObject gameObj = new StaticGameObject(this, new PartialRenderComponent(this, camera, bitmapData, playerObject));
 
     //VisibilityGameObject gameObj =
       //  new VisibilityGameObject(this, camera, shape, bitmapData, playerObject);
