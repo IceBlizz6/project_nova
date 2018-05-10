@@ -328,7 +328,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
   Vector checkCollisionMovement(
       AbstractGameObject gameObj, Vector startPosition, Vector targetPosition) {
-    num stepSize = Math.min(gameObj.bounds.width, gameObj.bounds.height) / 2;
+    num stepSize = 2;//Math.min(gameObj.bounds.width, gameObj.bounds.height) / 2;
     Vector travel = (targetPosition - startPosition);
     num length = travel.length;
     int steps = (length / stepSize).ceil();

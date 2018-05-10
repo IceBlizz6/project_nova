@@ -35,7 +35,7 @@ class GamePhysicsObject extends AbstractGameObject {
 
     position = scene.checkCollisionMovement(
         this, position, new Vector(position.x, targetPosition.y));
-
+    
     position += scene.checkBounds(this);
 
     return super.advanceTime(time);

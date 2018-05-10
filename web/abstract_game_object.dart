@@ -24,9 +24,15 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 	RenderComponent renderComponent; // full or partial render of the object
 
 	bool isNetworkControlled = false; // true to query position updates from network
+	
+	Shape collisionShape;
 
   AbstractGameObject(this.scene, this.renderComponent) {
   	this.addChild(renderComponent);
+  	
+  	this.collisionShape = new Shape();
+  	this.scene.camera.addChild(collisionShape);
+  	
 	}
 
   Vector get position => new Vector(x, y);
@@ -72,6 +78,12 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
   @override
   bool advanceTime(num time) {
   	renderComponent.renderUpdate(this.globalTransformationMatrix);
+  	
+  	collisionShape.graphics.clear();
+		collisionShape.graphics.rect(boundsTransformed.left, boundsTransformed.top, boundsTransformed.width, boundsTransformed.height);
+		//collisionShape.graphics.
+		collisionShape.graphics.strokeColor(Color.Blue);
+  	
     return true;
   }
 }
