@@ -1,4 +1,5 @@
 import 'package:box2d/box2d.dart';
+import '../abstract_game_object.dart';
 
 class BoxCollisionComponent {
 	static final double globalMultiplier = 0.01;
@@ -8,7 +9,7 @@ class BoxCollisionComponent {
 	List<Vector2> points;
 	Vector2 pivot;
 	
-	BoxCollisionComponent(World world, double pivotX, double pivotY,
+	BoxCollisionComponent(AbstractGameObject gameObject, World world, double pivotX, double pivotY,
 		double sizeX, double sizeY, BodyType type, [ double rotation = 0.0 ]) {
 		
 		this.pivot = new Vector2(pivotX, pivotY) * globalMultiplier;
@@ -17,6 +18,9 @@ class BoxCollisionComponent {
 		def.type = type;
 		
 		this.shape = new PolygonShape();
+		
+
+		
 
 		Vector2 leftTop = new Vector2(0.0, 0.0);
 		Vector2 leftBot = new Vector2(0.0, sizeY * globalMultiplier);
@@ -33,7 +37,8 @@ class BoxCollisionComponent {
 		
 	
 		
-		body.createFixtureFromShape(shape);
+		Fixture fixture = body.createFixtureFromShape(shape);
+		fixture.userData = gameObject;
 		
 		this.points = shape.vertices;
 	}

@@ -23,6 +23,8 @@ import 'game_object_components/full_render_component.dart';
 import 'game_object_components/partial_render_component.dart';
 import 'package:box2d/box2d.dart' as box2d;
 import 'static_game_object.dart';
+import 'game_object_components/custom_contact_listener.dart';
+import 'game_object_components/custom_contact_filter.dart';
 
 class GameScene extends DisplayObjectContainer implements Animatable {
   GameLoop _gameLoop;
@@ -42,6 +44,8 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
   GameScene(this._gameLoop, this.resourceManager) {
     this.world = new box2d.World.withGravity(new box2d.Vector2(0.0, 0.0));
+		world.setContactListener(new CustomContactListener());
+		world.setContactFilter(new CustomContactFilter());
     
     this.laserBitmapData = loadBitmap("laser1");
     

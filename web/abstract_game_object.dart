@@ -50,7 +50,7 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 		this.boundsHeight = bounds.height * scale.y;
 		
   //
-		this.collisionComponent = new BoxCollisionComponent(scene.world, offset.x, offset.y, boundsWidth, boundsHeight, type, rotation);
+		this.collisionComponent = new BoxCollisionComponent(this, scene.world, offset.x, offset.y, boundsWidth, boundsHeight, type, rotation);
 		collisionComponent.setPosition(this.x, this.y);
 	}
 
