@@ -38,6 +38,7 @@ class CustomContactListener extends ContactListener {
     
     if (list[0].gameObjectType == GameObjectType.PROJECTILE) {
       ProjectileGameObject proj = list[0] as ProjectileGameObject;
+      list[1].onProjectileHit(proj);
       proj.destroy = true;
     }
   }
