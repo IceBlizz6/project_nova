@@ -40,7 +40,10 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 	//Vector collisionOffset = new Vector.zero();
 
   AbstractGameObject(this.scene, this.renderComponent) {
-  	this.addChild(renderComponent);
+  	if (renderComponent != null) {
+			this.addChild(renderComponent);
+		}
+  
 	}
 	
 	void createCollisionData(Vector offset, Vector scale, box2d.BodyType type, [ double rotation = 0.0 ]) {
