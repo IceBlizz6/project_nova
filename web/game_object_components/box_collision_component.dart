@@ -64,6 +64,10 @@ class BoxCollisionComponent {
 		Vector2 velocity = body.linearVelocity;
 		body.applyForceToCenter(-velocity * 0.7);
 	}
+	
+	void destroy() {
+		body.world.destroyBody(body);
+	}
 
 
 }

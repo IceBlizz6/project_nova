@@ -1,5 +1,6 @@
 import 'abstract_game_object.dart';
 import 'dart:html';
+import 'game_object_type.dart';
 import 'game_scene.dart';
 import 'keyboard_device.dart';
 import 'mouse_device.dart';
@@ -98,4 +99,7 @@ class ControllableGameObject extends AbstractGameObject {
       return super.intersects(otherGameObject);
     }
   }
+  // TODO: implement gameObjectType
+  @override
+  GameObjectType get gameObjectType => GameObjectType.PLAYER;
 }

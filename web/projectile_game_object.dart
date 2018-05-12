@@ -1,12 +1,16 @@
 import 'abstract_game_object.dart';
+import 'game_object_type.dart';
 import 'game_scene.dart';
 import 'package:stagexl/stagexl.dart';
 import 'game_object_components/render_component.dart';
+import 'game_object_type.dart';
 
 class ProjectileGameObject extends AbstractGameObject {
 	AbstractGameObject source;
 	Vector direction;
 	bool speedInit = false;
+	
+	
 	
 	ProjectileGameObject(GameScene scene, RenderComponent renderComponent, this.source, this.direction) : super(scene, renderComponent) {
 		this.collisionEnabled = true;
@@ -24,4 +28,7 @@ class ProjectileGameObject extends AbstractGameObject {
 
 		return super.advanceTime(time);
 	}
+  // TODO: implement gameObjectType
+  @override
+  GameObjectType get gameObjectType => GameObjectType.PROJECTILE;
 }

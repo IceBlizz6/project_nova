@@ -16,6 +16,7 @@ import 'package:stagexl/stagexl.dart' as StageXL;
 import 'game_object_components/render_component.dart';
 import 'game_object_components/box_collision_component.dart';
 import 'package:box2d/box2d.dart' as box2d;
+import 'game_object_type.dart';
 
 abstract class AbstractGameObject extends Sprite implements Animatable {
   GameScene scene;
@@ -33,6 +34,8 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 	
 	double boundsWidth;
 	double boundsHeight;
+
+	bool destroy = false;
 	
 	//Vector collisionOffset = new Vector.zero();
 
@@ -54,6 +57,8 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 		collisionComponent.setPosition(this.x, this.y);
 	}
 
+	GameObjectType get gameObjectType;
+
   Vector get position => new Vector(x, y);
 
   void set position(Vector value) {
@@ -64,6 +69,11 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
 		}
 		
   }
+  
+  void destroyObject() {
+  	collisionComponent.destroy();
+		this.scene.camera.removeChild(collisionShape);
+	}
 
   bool intersects(AbstractGameObject otherGameObject) {
     return collisionEnabled &&
@@ -135,3 +145,4 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
     return true;
   }
 }
+

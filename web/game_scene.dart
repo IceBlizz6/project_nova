@@ -25,6 +25,7 @@ import 'package:box2d/box2d.dart' as box2d;
 import 'static_game_object.dart';
 import 'game_object_components/custom_contact_listener.dart';
 import 'game_object_components/custom_contact_filter.dart';
+import 'game_object_type.dart';
 
 class GameScene extends DisplayObjectContainer implements Animatable {
   GameLoop _gameLoop;
@@ -84,6 +85,11 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     drawTest(wireShape.graphics, pList, matrix.transformVector(playerObject.position));
 
     world.stepDt(time, 10, 10);
+
+    var destroyList = gameObjects.where((el) => el.gameObjectType == GameObjectType.PROJECTILE && (el as ProjectileGameObject).destroy).toList();
+    for ( ProjectileGameObject proj in destroyList) {
+      removeGameObject(proj);
+    }
   }
   
   void addLaserShot(AbstractGameObject source, Vector position, Vector direction, double rotation) {
@@ -231,6 +237,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   }
   
   void removeGameObject(AbstractGameObject gameObject) {
+    gameObject.destroyObject();
     gameObjects.remove(gameObject);
     camera.removeChild(gameObject);
     _gameLoop.removeJuggler(gameObject);
