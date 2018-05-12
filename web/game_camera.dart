@@ -96,16 +96,39 @@ class GameCamera extends DisplayObjectContainer implements Animatable {
       Vector v = target.position;
       cameraPos = findTargetPosition(v);
 
-			Vector offset = GameScene.checkMapBounds(cameraBounds, map.mapStart, map.mapEnd);
+			Vector offset = checkMapBounds(cameraBounds, map.mapStart, map.mapEnd);
 			cameraPos += offset;
     }
-    
-    
-
-
     
     this.x = -cameraPos.x;
     this.y = -cameraPos.y;
     return true;
+  }
+
+  static Vector checkMapBounds(var boundsTransformed, Vector mapStart, Vector mapEnd) {
+    double offsetX = 0.0;
+    double offsetY = 0.0;
+  
+    if (boundsTransformed.left < mapStart.x) {
+      double displace = mapStart.x - boundsTransformed.left;
+      offsetX += displace;
+    }
+  
+    if (boundsTransformed.right > mapEnd.x) {
+      double displace = boundsTransformed.right - mapEnd.x;
+      offsetX -= displace;
+    }
+  
+    if (boundsTransformed.top < mapStart.y) {
+      double displace = mapStart.y - boundsTransformed.top;
+      offsetY += displace;
+    }
+  
+    if (boundsTransformed.bottom > mapEnd.y) {
+      double displace = boundsTransformed.bottom - mapEnd.y;
+      offsetY -= displace;
+    }
+  
+    return new Vector(offsetX, offsetY);
   }
 }
