@@ -17,7 +17,7 @@ class GameSocket {
 
   GameSocket(this.currentGameLoop) {
     players = new Map<String, PlayerData>();
-    webSocket = new WebSocket('ws://192.168.20.10:1825/Laputa');
+    webSocket = new WebSocket('ws://192.168.20.9:1825/Laputa');
     webSocket.onOpen.listen(onOpen);
     webSocket.onMessage.listen(onMessage);
     webSocket.onClose.listen(onClose);
