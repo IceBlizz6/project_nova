@@ -115,7 +115,7 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
   
   @override
   bool advanceTime(num time) {
-  	renderComponent.renderUpdate(this.globalTransformationMatrix);
+  	renderComponent.renderUpdate(renderComponent.globalTransformationMatrix);
   	
   	if (collisionShape != null) {
 			collisionShape.graphics.clear();

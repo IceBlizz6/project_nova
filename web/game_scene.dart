@@ -311,26 +311,22 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 		RenderComponent renderComp;
 		
 		if (fullyVisible) {
-			Bitmap bitmap = new Bitmap(bitmapData);
-			//bitmap.pivotX = bitmap.width / 2;
-			//bitmap.pivotY = bitmap.height / 2;
-			
-			bitmap.rotation = Math.PI;
-			//bitmap.scaleX = 0.3;
-			//bitmap.scaleY = 0.3;
-			renderComp = new FullRenderComponent(bitmapData, bitmap);
+			renderComp = new FullRenderComponent(bitmapData, new Bitmap(bitmapData));
 		} else {
 			renderComp = new PartialRenderComponent(this, camera, bitmapData, playerObject);
 		}
-		
+
+    renderComp.rotation = Math.PI;
+
+    renderComp.scaleX = 0.3;
+    renderComp.scaleY = 0.3;
+
+    renderComp.pivotX = bitmapData.width / 2.0;
+    renderComp.pivotY = bitmapData.height / 2.0;
     
     NetworkObject networkPlayer = new NetworkObject(this, renderComp);
 
-		networkPlayer.scaleX = 0.3;
-		networkPlayer.scaleY = 0.3;
 		
-		networkPlayer.pivotX = bitmapData.width / 2.0;
-		networkPlayer.pivotY = bitmapData.height / 2.0;
 
     networkObjects[id] = networkPlayer;
     addGameObject(networkPlayer);
