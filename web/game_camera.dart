@@ -9,13 +9,16 @@ import 'game_map.dart';
 import 'game_scene.dart';
 
 class GameCamera extends DisplayObjectContainer implements Animatable {
+  static final int SCREEN_WIDTH = 1280;
+  static final int SCREEN_HEIGHT = 720;
+  
   num cameraSpeed = 400.0;
   GameMap map;
   ControllableGameObject target;
   KeyboardDevice keyboardDevice;
   
   Vector cameraPos = new Vector(0, 0);
-  Vector cameraSize = new Vector(1280, 720);
+  Vector cameraSize = new Vector(SCREEN_WIDTH, SCREEN_HEIGHT);
 
   GameCamera(this.map, this.keyboardDevice) {
   }
