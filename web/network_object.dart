@@ -12,12 +12,14 @@ class NetworkObject extends AbstractGameObject {
   double reportRotation;
 
   NetworkObject(GameScene scene, RenderComponent renderComponent)
-    : super(scene, renderComponent) {}
+    : super(scene, renderComponent) {
+    this.isNetworkControlled = true;
+  }
 
   @override
   bool advanceTime(num time) {
-    x = reportX;
-    y = reportY;
+
+    this.position = new Vector(reportX, reportY);
     rotation = reportRotation;
     
     return super.advanceTime(time);

@@ -306,7 +306,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     return segments;
   }
 
-  void createNetworkPlayer(String id, bool fullyVisible) {
+  void createNetworkPlayer(String id, Vector startingPosition, bool fullyVisible) {
     BitmapData bitmapData = loadBitmap("person");
 		RenderComponent renderComp;
 		
@@ -325,8 +325,10 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     renderComp.pivotY = bitmapData.height / 2.0;
     
     NetworkObject networkPlayer = new NetworkObject(this, renderComp);
+    
+    networkPlayer.position = startingPosition;
 
-		
+    //networkPlayer.createCollisionData(-new Vector(networkPlayer.bounds.width/2.0*0.3, networkPlayer.bounds.height/2.0*0.3), new Vector(0.3, 0.3), box2d.BodyType.KINEMATIC);
 
     networkObjects[id] = networkPlayer;
     addGameObject(networkPlayer);
@@ -336,10 +338,11 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
   void updateNetwork() {
     for (PlayerData playerData in gameSocket.players.values) {
+      
       if (networkObjects[playerData.id] == null) {
-        createNetworkPlayer(playerData.id, false);
+        createNetworkPlayer(playerData.id, new Vector(playerData.x, playerData.y), false);
       }
-    
+      
       networkObjects[playerData.id].reportX = playerData.x;
       networkObjects[playerData.id].reportY = playerData.y;
       networkObjects[playerData.id].reportRotation = playerData.rotation;
