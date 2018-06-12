@@ -198,25 +198,8 @@ FaerieFrost912
 
 
 
-	void updateRemoveNetwork(String removeId) {
-		var obj = networkSprites[removeId];
-		stage.juggler.remove(obj);
-		stage.removeChild(obj);
 
-		networkSprites[removeId] = null;
-	}
 
-	void updateNetwork() {
-		for (PlayerData playerData in gameSocket.players.values) {
-			if (networkSprites[playerData.id] == null) {
-				createNetworkPlayer(playerData.id);
-			}
-
-			networkSprites[playerData.id].reportX = playerData.x;
-			networkSprites[playerData.id].reportY = playerData.y;
-			networkSprites[playerData.id].reportRotation = playerData.rotation;
-		}
-	}
 
 	void createNetworkPlayer(String id) {
 		NetworkObject networkPlayerSprite = new NetworkObject();

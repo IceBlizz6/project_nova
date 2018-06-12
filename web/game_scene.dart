@@ -84,6 +84,8 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
   @override
   bool advanceTime(num time) {
+    shipObj.rotation += 0.01;
+    
     List<Segment> segments = getAllSegments();
     List<IntersectionData> polygons =
         CollisionRay.getSightPolygon(segments, playerObject.position);
@@ -219,6 +221,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     addGameObject(gameObj);
   }
 
+  StaticGameObject shipObj;
   void addShipVisibility() {
     BitmapData bitmapData = loadBitmap("spaceship1");
 
@@ -230,13 +233,23 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     //stage.addChild(shape);
 
     StaticGameObject gameObj = new StaticGameObject(this, new PartialRenderComponent(this, camera, bitmapData, playerObject));
-
+    this.shipObj = gameObj;
     //VisibilityGameObject gameObj =
       //  new VisibilityGameObject(this, camera, shape, bitmapData, playerObject);
     //gameObj.addChild(shape);
 
-    gameObj.scaleX = 3.0;
-    gameObj.scaleY = 3.0;
+    gameObj.scaleX = 2.0;
+    gameObj.scaleY = 2.0;
+
+    gameObj.pivotX = bitmapData.width / 2.0;
+    gameObj.pivotY = bitmapData.height / 2.0;
+    
+    //gameObj.rotation = Math.PI / 2.0;
+    
+    
+    
+    gameObj.x = 300;
+    gameObj.y = 200;
 
     //gameObj.position = new Vector(300, 0);
     //shape.x = 300;

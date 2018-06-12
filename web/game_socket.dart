@@ -23,7 +23,7 @@ class GameSocket {
 
   GameSocket(this.scene) {
     players = new Map<String, PlayerData>();
-    webSocket = new WebSocket('ws://192.168.20.9:1825/Laputa');
+    webSocket = new WebSocket('ws://193.90.175.134:1845/Laputa');
     webSocket.onOpen.listen(onOpen);
     webSocket.onMessage.listen(onMessage);
     webSocket.onClose.listen(onClose);
