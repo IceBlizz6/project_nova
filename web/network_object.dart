@@ -20,7 +20,7 @@ class NetworkObject extends AbstractGameObject {
     y = reportY;
     rotation = reportRotation;
     
-    return true;
+    return super.advanceTime(time);
   }
   
   @override

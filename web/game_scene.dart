@@ -28,6 +28,7 @@ import 'game_object_components/custom_contact_filter.dart';
 import 'game_object_type.dart';
 import 'network_object.dart';
 import 'game_socket.dart';
+import 'game_object_components/render_component.dart';
 
 class GameScene extends DisplayObjectContainer implements Animatable {
   GameLoop _gameLoop;
@@ -305,20 +306,31 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     return segments;
   }
 
-  void createNetworkPlayer(String id) {
+  void createNetworkPlayer(String id, bool fullyVisible) {
     BitmapData bitmapData = loadBitmap("person");
-    Bitmap bitmap = new Bitmap(bitmapData);
-    bitmap.pivotX = bitmap.width / 2;
-    bitmap.pivotY = bitmap.height / 2;
-  
-    bitmap.rotation = Math.PI;
-    bitmap.scaleX = 0.3;
-    bitmap.scaleY = 0.3;
-    var renderComp = new FullRenderComponent(bitmapData, bitmap);
+		RenderComponent renderComp;
+		
+		if (fullyVisible) {
+			Bitmap bitmap = new Bitmap(bitmapData);
+			//bitmap.pivotX = bitmap.width / 2;
+			//bitmap.pivotY = bitmap.height / 2;
+			
+			bitmap.rotation = Math.PI;
+			//bitmap.scaleX = 0.3;
+			//bitmap.scaleY = 0.3;
+			renderComp = new FullRenderComponent(bitmapData, bitmap);
+		} else {
+			renderComp = new PartialRenderComponent(this, camera, bitmapData, playerObject);
+		}
+		
     
-    //new PartialRenderComponent(this, camera, bitmapData, playerObject);
-  
     NetworkObject networkPlayer = new NetworkObject(this, renderComp);
+
+		networkPlayer.scaleX = 0.3;
+		networkPlayer.scaleY = 0.3;
+		
+		networkPlayer.pivotX = bitmapData.width / 2.0;
+		networkPlayer.pivotY = bitmapData.height / 2.0;
 
     networkObjects[id] = networkPlayer;
     addGameObject(networkPlayer);
@@ -329,7 +341,7 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   void updateNetwork() {
     for (PlayerData playerData in gameSocket.players.values) {
       if (networkObjects[playerData.id] == null) {
-        createNetworkPlayer(playerData.id);
+        createNetworkPlayer(playerData.id, false);
       }
     
       networkObjects[playerData.id].reportX = playerData.x;
