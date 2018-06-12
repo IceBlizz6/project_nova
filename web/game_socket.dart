@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html';
+import 'dart:typed_data';
 import 'game_loop.dart';
 import 'game_scene.dart';
 
@@ -32,6 +33,18 @@ class GameSocket {
   void updatePosition(double x, double y, double rotation) {
     webSocket.sendString(
         "0|" + x.toString() + "|" + y.toString() + "|" + rotation.toString());
+
+    // 0(byte), x(double), y(double), rotation(double)
+		var buffer = new Uint8List(8*3 + 1).buffer;
+		var bdata = new ByteData.view(buffer);
+		bdata.setUint8(0, 0);
+		bdata.setFloat64(1, x, Endianness.LITTLE_ENDIAN);
+		bdata.setFloat64(8+1, y, Endianness.LITTLE_ENDIAN);
+		bdata.setFloat64(8*2+1, rotation, Endianness.LITTLE_ENDIAN);
+		
+		
+		
+    webSocket.sendByteBuffer(bdata.buffer);
   }
 
   onOpen(open) {
