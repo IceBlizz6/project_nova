@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:html';
 import 'game_loop.dart';
+import 'game_scene.dart';
 
 class PlayerData {
   String id;
@@ -13,9 +14,14 @@ class GameSocket {
   WebSocket webSocket;
   String id;
   Map<String, PlayerData> players;
-  GameLoop currentGameLoop;
+	GameScene scene;
+	
+	bool connected = false;
+	
+	bool updatePositionReady = false;
+	List<String> removeList = new List<String>();
 
-  GameSocket(this.currentGameLoop) {
+  GameSocket(this.scene) {
     players = new Map<String, PlayerData>();
     webSocket = new WebSocket('ws://192.168.20.9:1825/Laputa');
     webSocket.onOpen.listen(onOpen);
@@ -29,7 +35,9 @@ class GameSocket {
   }
 
   onOpen(open) {
+  	
     webSocket.send("Connected");
+    connected = true;
   }
 
   onMessage(MessageEvent message) {
@@ -58,23 +66,30 @@ class GameSocket {
 
           //print(list[i]);
           //print(playerId +  " X:" + playerX.toInt().toString() + " Y:" + playerY.toInt().toString());
+					updatePositionReady = true;
         }
       }
 
-      if (currentGameLoop != null) {
-        //print("update!");
-        currentGameLoop.updateNetwork();
-      }
+			
+
     } else if (list[0] == "3") {
       String removeId = list[1];
-      players[removeId] = null;
-      currentGameLoop.updateRemoveNetwork(removeId);
+			removeList.add(removeId);
     }
 
     //print("Data Received: " + message.data);
   }
 
-  onClose(ev) {
+	void syncRemove() {
+  	for (String playerId in removeList) {
+			players[playerId] = null;
+			players.remove(playerId);
+			scene.updateRemoveNetwork(playerId);
+		}
+		removeList.clear();
+	}
+
+  void onClose(ev) {
     print("Connection closed");
   }
 }

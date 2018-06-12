@@ -15,7 +15,6 @@ import 'game_scene.dart';
 
 class GameLoop implements Animatable {
   ResourceManager resourceManager;
-  GameSocket gameSocket;
   KeyboardDevice keyboardDevice;
   MouseDevice mouseDevice;
   GamepadDevice gamepadDevice;
@@ -31,8 +30,6 @@ class GameLoop implements Animatable {
 
     this.gamepadDevice = new GamepadDevice(0);
     _stage.juggler.add(gamepadDevice);
-
-    this.gameSocket = new GameSocket(this);
 
     this.gameScene = new GameScene(this, resourceManager);
     _stage.addChild(gameScene);
@@ -51,8 +48,4 @@ class GameLoop implements Animatable {
   void removeJuggler(Animatable animatable) {
     _stage.juggler.remove(animatable);
   }
-
-  void updateNetwork() {}
-
-  void updateRemoveNetwork(String removeId) {}
 }

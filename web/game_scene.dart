@@ -26,13 +26,15 @@ import 'static_game_object.dart';
 import 'game_object_components/custom_contact_listener.dart';
 import 'game_object_components/custom_contact_filter.dart';
 import 'game_object_type.dart';
+import 'network_object.dart';
+import 'game_socket.dart';
 
 class GameScene extends DisplayObjectContainer implements Animatable {
   GameLoop _gameLoop;
   ResourceManager resourceManager;
   List<AbstractGameObject> gameObjects;
   ControllableGameObject playerObject;
-  // Map<String, NetworkObject> networkSprites = new Map<String, NetworkObject>();
+  Map<String, NetworkObject> networkObjects;
   GameCamera camera;
 
   StageXL.Shape wireShape;
@@ -42,6 +44,8 @@ class GameScene extends DisplayObjectContainer implements Animatable {
   GameMap gameMap;
 
   BitmapData laserBitmapData;
+  
+  GameSocket gameSocket;
 
   GameScene(this._gameLoop, this.resourceManager) {
     this.world = new box2d.World.withGravity(new box2d.Vector2(0.0, 0.0));
@@ -72,6 +76,10 @@ class GameScene extends DisplayObjectContainer implements Animatable {
 
     this.wireShape = new StageXL.Shape();
     this.addChild(wireShape);
+    
+    this.networkObjects = new Map<String, NetworkObject>();
+
+    this.gameSocket = new GameSocket(this);
   }
 
   @override
@@ -83,6 +91,21 @@ class GameScene extends DisplayObjectContainer implements Animatable {
     var matrix = camera.globalTransformationMatrix;
     List<Vector> pList = polygons.map((el) => matrix.transformVector(el.v)).toList();
     drawTest(wireShape.graphics, pList, matrix.transformVector(playerObject.position));
+    
+    if (gameSocket.connected) {
+      
+      if (gameSocket.removeList.length > 0) {
+        gameSocket.syncRemove();
+      }
+      
+      if (gameSocket.updatePositionReady) {
+        updateNetwork();
+        gameSocket.updatePositionReady = false;
+      }
+      
+      gameSocket.updatePosition(playerObject.x, playerObject.y, playerObject.rotation);
+    }
+    
 
     world.stepDt(time, 10, 10);
 
@@ -270,5 +293,48 @@ class GameScene extends DisplayObjectContainer implements Animatable {
       }
     }
     return segments;
+  }
+
+  void createNetworkPlayer(String id) {
+    BitmapData bitmapData = loadBitmap("person");
+    Bitmap bitmap = new Bitmap(bitmapData);
+    bitmap.pivotX = bitmap.width / 2;
+    bitmap.pivotY = bitmap.height / 2;
+  
+    bitmap.rotation = Math.PI;
+    bitmap.scaleX = 0.3;
+    bitmap.scaleY = 0.3;
+    var renderComp = new FullRenderComponent(bitmapData, bitmap);
+    
+    //new PartialRenderComponent(this, camera, bitmapData, playerObject);
+  
+    NetworkObject networkPlayer = new NetworkObject(this, renderComp);
+
+    networkObjects[id] = networkPlayer;
+    addGameObject(networkPlayer);
+  
+    print("Player added: " + id);
+  }
+
+  void updateNetwork() {
+    for (PlayerData playerData in gameSocket.players.values) {
+      if (networkObjects[playerData.id] == null) {
+        createNetworkPlayer(playerData.id);
+      }
+    
+      networkObjects[playerData.id].reportX = playerData.x;
+      networkObjects[playerData.id].reportY = playerData.y;
+      networkObjects[playerData.id].reportRotation = playerData.rotation;
+      
+      //print("Number: " + gameObjects.length.toString());
+    }
+  }
+
+  void updateRemoveNetwork(String removeId) {
+    print("Player removed: " + removeId);
+    
+    var obj = networkObjects[removeId];
+    removeGameObject(obj);
+    networkObjects[removeId] = null;
   }
 }

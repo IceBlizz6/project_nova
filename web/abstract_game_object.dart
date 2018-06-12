@@ -74,8 +74,10 @@ abstract class AbstractGameObject extends Sprite implements Animatable {
   }
   
   void destroyObject() {
-  	collisionComponent.destroy();
-		this.scene.camera.removeChild(collisionShape);
+  	if (collisionComponent != null) {
+			collisionComponent.destroy();
+			this.scene.camera.removeChild(collisionShape);
+		}
 	}
 
   bool intersects(AbstractGameObject otherGameObject) {

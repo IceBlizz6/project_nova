@@ -1,31 +1,28 @@
 import 'dart:async';
 import 'dart:html' as html;
-import 'dart:html';
+import 'game_object_type.dart';
 import 'package:stagexl/stagexl.dart';
-import 'dart:math';
-import 'keyboard_device.dart';
-import 'gamepad_device.dart';
-import 'dart:math';
-import 'game_camera.dart';
-import 'dart:math' as Math;
-import 'mouse_device.dart';
+import 'abstract_game_object.dart';
+import 'game_scene.dart';
+import 'game_object_components/render_component.dart';
 
-class NetworkObject extends Sprite implements Animatable {
+class NetworkObject extends AbstractGameObject {
   double reportX;
   double reportY;
   double reportRotation;
 
-  Vector get position => new Vector(x, y);
-
-  void set position(Vector value) {
-    x = value.x;
-    y = value.y;
-  }
+  NetworkObject(GameScene scene, RenderComponent renderComponent)
+    : super(scene, renderComponent) {}
 
   @override
   bool advanceTime(num time) {
     x = reportX;
     y = reportY;
     rotation = reportRotation;
+    
+    return true;
   }
+  
+  @override
+  GameObjectType get gameObjectType => GameObjectType.PLAYER;
 }
